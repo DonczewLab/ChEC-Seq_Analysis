@@ -269,7 +269,7 @@ rule make_bigwig_scer_spikein:
         config["python"]
     log:
         "results/logs/bigwig/spikein/{sample}.log"
-shell:
+    shell:
         """
         # Extract factor from the CSV using an inline Python snippet:
         factor=$(python <<EOF
