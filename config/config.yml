@@ -1,23 +1,37 @@
 ## samples file
 samples_csv: "config/samples.csv"
 
-# Genome indices
-spom_genome: "/path/to/spombe_bowtie2_index/spombe"
-dmel_genome: "/path/to/dmelanogaster_bowtie2_index/dmel"
+# ==============================================================================
+# GENOME and BLACKLIST PATHS
+# ==============================================================================
 
-# Blacklist (if you have one for spom)
-blacklist_spom: "/path/to/spombe_blacklist.bed"
+# Primary (no spike-in) genome = S. cerevisiae
+scer_genome: "/s/cobre-dev-bio/boydk/Rafal_Lab/saccharomyces_cerevisiae_scer_genome/SGD_R64-3-1_genome_bowtie2_index/SGD_R64-3-1_genome"
+blacklist_scer: "/s/cobre-dev-bio/boydk/Rafal_Lab/saccharomyces_cerevisiae_scer_genome/SGD_R64-3-1_blacklist.bed"
+genome_file_scer: "/s/cobre-dev-bio/boydk/Rafal_Lab/saccharomyces_cerevisiae_scer_genome/SGD_R64-3-1_genomefile.txt"
 
-# bbmap adapter file (used by BBDuk)
-bbmap_ref: "/path/to/bbmap/truseq_universal_adapters.fa"
+# Default spike-in genome = D. melanogaster
+dmel_genome: "/s/cobre-dev-bio/boydk/Rafal_Lab/drosophila_melanogaster_dmel_genome/NCBI_R6plusISO1MT_genome_bowtie2_index/NCBI_R6plusISO1MT_genome"
 
-# Genome file (for bigWig creation via bedGraphToBigWig)
-genome_file_spom: "/path/to/spombe/genomefile.txt"
+# ------------------------------------------------------------------------------
+# Optionally, if you want to switch to S. pombe as spike-in, uncomment below:
+# spom_genome: "/s/cobre-dev-bio/boydk/Rafal_Lab/schizosaccharomyces_pombe_spom_genome/NCBI_ASM294v2_genome_bowtie2_index/NCBI_ASM294v2_genome"
+# genome_file_spom: "/s/cobre-dev-bio/boydk/Rafal_Lab/schizosaccharomyces_pombe_spom_genome/NCBI_ASM294v2_genomefile.txt"
+# ------------------------------------------------------------------------------
 
-# binSize, normalization, etc.
+# ==============================================================================
+# ADAPTER FILE (BBDuk)
+# ==============================================================================
+bbmap_ref: "/s/cobre-dev-bio/boydk/Rafal_Lab/adapters/truseq_universal_adapters.fa"
+
+# ==============================================================================
+# BIGWIG / DEEPTOOLS PARAMETERS
+# ==============================================================================
 binSize: 1
 
-# Module versions (example - adapt to your HPC)
+# ==============================================================================
+# SOFTWARE MODULE VERSIONS
+# ==============================================================================
 fastqc: "fastqc/0.12.1"
 multiqc: "multiqc/1.21"
 bbmap: "bbmap/39.06"
