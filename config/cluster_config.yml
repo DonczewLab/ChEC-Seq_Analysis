@@ -2,29 +2,65 @@
 __default__:
   account: sansam-lab
   partition: serial
-  time: 08:00:00
+  time: "08:00:00"
   cpus-per-task: 2
-  mem: 16G
+  mem: "16G"
   output: logs/slurm-%x.%A.%a.log
 
 fastqc_raw:
   cpus-per-task: 4
-  mem: 32G
+  mem: "32G"
   cores: 4
-  time: 02:00:00
+  time: "02:00:00"
   name: "{rule}.{wildcards.sample}"
   output: logs/{rule}.{wildcards.sample}.out
   error: logs/{rule}.{wildcards.sample}.err
 
 trim_adapters:
   cpus-per-task: 8
-  mem: 32G
+  mem: "32G"
   cores: 8
-  ...
-  
-align_spom:
+  time: "02:00:00"
+  name: "{rule}.{wildcards.sample}"
+
+align_scer:
   cpus-per-task: 16
-  mem: 64G
+  mem: "64G"
   cores: 16
-  ...
-  
+  time: "08:00:00"
+  name: "{rule}.{wildcards.sample}"
+
+align_dmel:
+  cpus-per-task: 16
+  mem: "64G"
+  cores: 16
+  time: "08:00:00"
+  name: "{rule}.{wildcards.sample}"
+
+make_bigwig_raw_scer:
+  cpus-per-task: 4
+  mem: "16G"
+  cores: 4
+  time: "02:00:00"
+  name: "{rule}.{wildcards.sample}"
+
+calc_spikein_factors:
+  cpus-per-task: 2
+  mem: "16G"
+  cores: 2
+  time: "02:00:00"
+  name: "{rule}"
+
+make_bigwig_scer_spikein:
+  cpus-per-task: 4
+  mem: "16G"
+  cores: 4
+  time: "02:00:00"
+  name: "{rule}.{wildcards.sample}"
+
+make_bigwig_scer_cpm:
+  cpus-per-task: 4
+  mem: "16G"
+  cores: 4
+  time: "02:00:00"
+  name: "{rule}.{wildcards.sample}"
