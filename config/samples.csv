@@ -1,3 +1,7 @@
 sample,fastq1,fastq2
-SampleA,/path/to/SampleA_R1.fastq.gz,/path/to/SampleA_R2.fastq.gz
-SampleB,/path/to/SampleB_R1.fastq.gz,/path/to/SampleB_R2.fastq.gz
+RDHTS789,/resources/RDHTS789_S121_R1_001.fastq.gz,/resources/RDHTS789_S121_R2_001.fastq.gz
+RDHTS790,/resources/RDHTS790_S122_R1_001.fastq.gz,/resources/RDHTS790_S122_R2_001.fastq.gz
+RDHTS791,/resources/RDHTS791_S123_R1_001.fastq.gz,/resources/RDHTS791_S123_R2_001.fastq.gz
+RDHTS792,/resources/RDHTS792_S124_R1_001.fastq.gz,/resources/RDHTS792_S124_R2_001.fastq.gz
+RDHTS793,/resources/RDHTS793_S125_R1_001.fastq.gz,/resources/RDHTS793_S125_R2_001.fastq.gz
+RDHTS794,/resources/RDHTS794_S126_R1_001.fastq.gz,/resources/RDHTS794_S126_R2_001.fastq.gz
