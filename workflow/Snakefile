@@ -16,7 +16,6 @@ configfile: "config/config.yml"
 
 import os
 import pandas as pd
-from snakemake.utils import unpack
 
 ################################################################################
 # Load sample table
