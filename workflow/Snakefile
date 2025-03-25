@@ -199,7 +199,7 @@ rule make_bigwig_raw_scer:
         "results/bigwig/scer/raw/{sample}_raw.bw"
     params:
         binSize=config["binSize"],
-        blacklist=config.get("blacklist_scer", "")
+        blacklist=config["blacklist_scer"]
     envmodules:
         config["deeptools"]
     log:
@@ -211,8 +211,7 @@ rule make_bigwig_raw_scer:
             --binSize {params.binSize} \
             --numberOfProcessors 4 \
             --normalizeUsing None \
-            {('--blackListFileName ' + params.blacklist) if params.blacklist else ''} \
-            2> {log}
+            --blackListFileName {params.blacklist}
         """
 
 ################################################################################
