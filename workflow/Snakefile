@@ -303,7 +303,7 @@ rule make_bigwig_scer_cpm:
         "results/bigwig/scer/cpm/{sample}_CPM.bw"
     params:
         binSize=config["binSize"],
-        blacklist=config.get("blacklist_scer", "")
+        blacklist=config["blacklist_scer"]
     envmodules:
         config["deeptools"]
     log:
