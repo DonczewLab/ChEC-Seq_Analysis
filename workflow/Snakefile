@@ -1,6 +1,7 @@
 configfile: "config/config.yml"
 
 ###############################################################################
+# S N A K E F I L E  for CHEC-seq
 # Steps:
 #  1) FastQC
 #  2) Adapter Trim (BBDuk)
@@ -15,28 +16,34 @@ configfile: "config/config.yml"
 
 import os
 import pandas as pd
+from snakemake.utils import unpack
 
-##################################################################
-##                    Define input functions                    ##
-##################################################################
-
-# Read in sample metadata
+################################################################################
+# Load sample table
+################################################################################
 samples_df = pd.read_csv(config["samples_csv"])
 samples_df.set_index("sample", inplace=True, drop=False)
 SAMPLES = samples_df.index.tolist()
 
-def get_fastqs(wildcards):
-    """Return dict of R1/R2 FASTQ paths from the samples.csv."""
+################################################################################
+# Dictionary-based input function
+################################################################################
+def fq_dict_from_sample(wildcards):
+    """
+    Return a dict: {"r1": <R1path>, "r2": <R2path>} for each sample.
+    We'll use 'unpack(...)' in the rules so we can reference input.r1, input.r2.
+    """
     row = samples_df.loc[wildcards.sample]
-    return {"r1": row["fastq1"], "r2": row["fastq2"]}
+    return {
+        "r1": row["fastq1"],
+        "r2": row["fastq2"]
+    }
 
-
-##################################################################
-##                          Rule All                            ##
-##################################################################
-
+################################################################################
+# RULE: ALL
+################################################################################
 rule all:
-    """Aggregate all final outputs of the pipeline."""
+    """Collect all final outputs of the pipeline."""
     input:
         # 1) FastQC
         expand("results/qc/fastqc/{sample}_R1_fastqc.html", sample=SAMPLES),
@@ -66,20 +73,17 @@ rule all:
         # 8) CPM BigWigs (scer)
         expand("results/bigwig/scer/cpm/{sample}_CPM.bw", sample=SAMPLES),
 
-        # 9) [Optional] mean coverage BigWigs
-        # Uncomment if you actually do replicate merging:
+        # 9) [Optional] mean coverage BigWigs (if merging replicates)
         # expand("results/bigwig/scer/cpm_mean/{sample}_CPM_mean.bw", sample=SAMPLES)
     message:
         "All pipeline outputs have been generated."
 
-
-###############################################################################
-# RULE: FastQC on raw data
-###############################################################################
+################################################################################
+# RULE: FastQC
+################################################################################
 rule fastqc_raw:
-    """Run FastQC on raw FASTQs."""
     input:
-        get_fastqs
+        unpack(fq_dict_from_sample)
     output:
         html1="results/qc/fastqc/{sample}_R1_fastqc.html",
         zip1 ="results/qc/fastqc/{sample}_R1_fastqc.zip",
@@ -103,14 +107,12 @@ rule fastqc_raw:
         mv $dir/${{baseR2}}_fastqc.zip {output.zip2} || true
         """
 
-
-###############################################################################
+################################################################################
 # RULE: Adapter Trimming (BBDuk)
-###############################################################################
+################################################################################
 rule trim_adapters:
-    """Trim adapters using BBDuk."""
     input:
-        get_fastqs
+        unpack(fq_dict_from_sample)
     output:
         r1_trim="results/trimmed/{sample}_R1_trimmed.fastq.gz",
         r2_trim="results/trimmed/{sample}_R2_trimmed.fastq.gz"
@@ -132,15 +134,12 @@ rule trim_adapters:
           threads=8 2> {log}
         """
 
-
-###############################################################################
-# RULE: Align to S. cerevisiae (primary, no spike-in)
-###############################################################################
+################################################################################
+# RULE: Align to S. cerevisiae (primary)
+################################################################################
 rule align_scer:
-    """Align trimmed reads to S. cerevisiae genome using Bowtie2."""
     input:
-        r1="results/trimmed/{sample}_R1_trimmed.fastq.gz",
-        r2="results/trimmed/{sample}_R2_trimmed.fastq.gz"
+        unpack(fq_dict_from_sample)
     output:
         bam="results/alignment/scer/{sample}.bam",
         bai="results/alignment/scer/{sample}.bam.bai"
@@ -163,15 +162,12 @@ rule align_scer:
         samtools index -@ 8 {output.bam} {output.bai}
         """
 
-
-###############################################################################
+################################################################################
 # RULE: Align to D. melanogaster (spike-in)
-###############################################################################
+################################################################################
 rule align_dmel:
-    """Align trimmed reads to D. melanogaster (spike-in) genome using Bowtie2."""
     input:
-        r1="results/trimmed/{sample}_R1_trimmed.fastq.gz",
-        r2="results/trimmed/{sample}_R2_trimmed.fastq.gz"
+        unpack(fq_dict_from_sample)
     output:
         bam="results/alignment/dmel/{sample}.bam",
         bai="results/alignment/dmel/{sample}.bam.bai"
@@ -194,12 +190,10 @@ rule align_dmel:
         samtools index -@ 8 {output.bam} {output.bai}
         """
 
-
-###############################################################################
+################################################################################
 # RULE: Make Raw BigWig (scer)
-###############################################################################
+################################################################################
 rule make_bigwig_raw_scer:
-    """Generate raw (no normalization) bigWig from scer BAM."""
     input:
         "results/alignment/scer/{sample}.bam"
     output:
@@ -222,13 +216,12 @@ rule make_bigwig_raw_scer:
             2> {log}
         """
 
-
-###############################################################################
-# RULE: Calculate Spike-In Factors (Single CSV for ALL samples)
-###############################################################################
+################################################################################
+# RULE: Calculate Spike-In Factors (single CSV)
+################################################################################
 rule calc_spikein_factors:
     """
-    Gather ALL scer + dmel BAMs, pass them to calc_spikein.py, 
+    Gather ALL scer + dmel BAMs, pass them to scripts/calc_spikein.py,
     which writes results/spikein_factors/spikein_factors.csv.
     """
     input:
@@ -247,14 +240,14 @@ rule calc_spikein_factors:
         2> {log}
         """
 
-
-###############################################################################
+################################################################################
 # RULE: Make Spike-In Normalized BigWigs (scer)
-###############################################################################
+#        with a shell-based inline Python snippet
+################################################################################
 rule make_bigwig_scer_spikein:
     """
-    Use the factor from spikein_factors.csv to scale coverage in scer BAM, 
-    producing spike-in normalized bigWig.
+    Use the factor from spikein_factors.csv to scale coverage in scer BAM,
+    producing a spike-in normalized bigWig.
     """
     input:
         bam="results/alignment/scer/{sample}.bam",
@@ -270,27 +263,25 @@ rule make_bigwig_scer_spikein:
     log:
         "results/logs/bigwig/spikein/{sample}.log"
     shell:
-        """
-        # Extract factor from the CSV using an inline Python snippet:
+        r"""
+        # 1) Extract the factor for this sample from CSV
         factor=$(python <<EOF
-        import csv
-        import sys
+import csv
+sample_name = "{wildcards.sample}"
+factor = 1.0
+with open("{input.csv}", "r") as inf:
+    reader = csv.DictReader(inf)
+    for row in reader:
+        if row["sample"] == sample_name:
+            factor = float(row["spikein_factor"])
+            break
+print(factor)
+EOF
+)
 
-        sample_name = "{wildcards.sample}"
-        factor=1.0
-        with open("{input.csv}", "r") as inf:
-            reader = csv.DictReader(inf)
-            for row in reader:
-                if row["sample"] == sample_name:
-                    factor = float(row["spikein_factor"])
-                    break
-        print(factor)
-        EOF
-        )
+        echo "Spike-in factor for {wildcards.sample} = $factor" >> {log}
 
-        echo "Calculated spike-in factor for {wildcards.sample} = $factor" >> {log}
-
-        # Now run bamCoverage with that factor
+        # 2) Run bamCoverage with that scale factor
         bamCoverage --bam {input.bam} \
                     --outFileName {output} \
                     --binSize {params.binSize} \
@@ -300,9 +291,9 @@ rule make_bigwig_scer_spikein:
                     2>> {log}
         """
 
-###############################################################################
+################################################################################
 # RULE: Make CPM BigWigs (scer)
-###############################################################################
+################################################################################
 rule make_bigwig_scer_cpm:
     """
     Generate CPM-normalized bigWig from scer BAM.
@@ -329,13 +320,12 @@ rule make_bigwig_scer_cpm:
             2> {log}
         """
 
-
-# ==============================================================================
-# OPTIONAL: Mean Coverage BigWigs (if you have replicates you want to merge)
-# ==============================================================================
+################################################################################
+# OPTIONAL: Mean Coverage BigWigs (if you have replicates)
+################################################################################
 rule make_bedgraph_scer_cpm:
     """
-    Make bedGraph with CPM normalization for scer BAM.
+    Make a CPM bedGraph from scer BAM. Then you can merge replicate bedGraphs.
     """
     input:
         "results/alignment/scer/{sample}.bam"
@@ -363,7 +353,7 @@ rule make_bedgraph_scer_cpm:
 rule merge_bedgraphs_mean_cpm:
     """
     Union multiple replicate bedGraphs for a sample, compute mean coverage.
-    Adjust 'rep' in expand(...) if you have N replicates or different naming.
+    Adjust 'rep' to your replicate labels.
     """
     input:
         expand("results/bedgraph/scer/cpm/{{sample}}_{rep}.bg", rep=["1","2","3"])
@@ -377,7 +367,8 @@ rule merge_bedgraphs_mean_cpm:
         r"""
         bedtools unionbedg -i {input} | \
         awk 'OFS="\t" {
-          sum=0; for (i=4; i<=NF; i++) sum+=$i;
+          sum=0; 
+          for (i=4; i<=NF; i++) sum+=$i;
           print $1,$2,$3,sum/(NF-3)
         }' | sort -k1,1 -k2,2n > {output}
         """
@@ -400,3 +391,4 @@ rule bedgraph_to_bigwig_mean_cpm:
         """
         bedGraphToBigWig {input} {params.genome_file} {output} 2> {log}
         """
+
