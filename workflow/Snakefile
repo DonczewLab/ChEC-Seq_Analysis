@@ -255,7 +255,7 @@ rule make_bigwig_scer_spikein:
         "results/bigwig/scer/spikein/{sample}_SpikeIn.bw"
     params:
         binSize=config["binSize"],
-        blacklist=config.get("blacklist_scer", "")
+        blacklist=config["blacklist_scer"]
     envmodules:
         config["deeptools"],
         config["python"]
@@ -286,8 +286,7 @@ EOF
                     --binSize {params.binSize} \
                     --numberOfProcessors 4 \
                     --scaleFactor $factor \
-                    {('--blackListFileName ' + '{params.blacklist}') if '{params.blacklist}' else ''} \
-                    2>> {log}
+                    --blackListFileName {params.blacklist}
         """
 
 ################################################################################
@@ -315,8 +314,7 @@ rule make_bigwig_scer_cpm:
             --binSize {params.binSize} \
             --numberOfProcessors 4 \
             --normalizeUsing CPM \
-            {('--blackListFileName ' + params.blacklist) if params.blacklist else ''} \
-            2> {log}
+            --blackListFileName {params.blacklist}
         """
 
 ################################################################################
