@@ -332,7 +332,7 @@ rule make_bedgraph_scer_cpm:
         "results/bedgraph/scer/cpm/{sample}.bg"
     params:
         binSize=config["binSize"],
-        blacklist=config.get("blacklist_scer", "")
+        blacklist=config["blacklist_scer"]
     envmodules:
         config["deeptools"]
     log:
@@ -345,8 +345,7 @@ rule make_bedgraph_scer_cpm:
             --binSize {params.binSize} \
             --numberOfProcessors 4 \
             --normalizeUsing CPM \
-            {('--blackListFileName ' + params.blacklist) if params.blacklist else ''} \
-            2> {log}
+            --blackListFileName {params.blacklist}
         """
 
 rule merge_bedgraphs_mean_cpm:
