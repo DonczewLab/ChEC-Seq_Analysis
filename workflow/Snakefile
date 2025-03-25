@@ -269,35 +269,36 @@ rule make_bigwig_scer_spikein:
         config["python"]
     log:
         "results/logs/bigwig/spikein/{sample}.log"
-    run:
-        import csv as csvlib
-        import subprocess
-        
-        sample_name = wildcards.sample
-        factor = 1.0
-        with open(input.csv, "r") as inf:
-            reader = csvlib.DictReader(inf)
+shell:
+        """
+        # Extract factor from the CSV using an inline Python snippet:
+        factor=$(python <<EOF
+        import csv
+        import sys
+
+        sample_name = "{wildcards.sample}"
+        factor=1.0
+        with open("{input.csv}", "r") as inf:
+            reader = csv.DictReader(inf)
             for row in reader:
                 if row["sample"] == sample_name:
                     factor = float(row["spikein_factor"])
                     break
-        
-        cmd = [
-            "bamCoverage",
-            "--bam", input.bam,
-            "--outFileName", output[0],
-            "--binSize", str(params.binSize),
-            "--numberOfProcessors", "4",
-            "--scaleFactor", str(factor),
-        ]
-        if params.blacklist:
-            cmd += ["--blackListFileName", params.blacklist]
+        print(factor)
+        EOF
+        )
 
-        # No "normalizeUsing" because we do a custom scaleFactor
-        cmd_log = f"2> {log}"
-        
-        subprocess.run(" ".join(cmd) + " " + cmd_log, shell=True, check=True)
+        echo "Calculated spike-in factor for {wildcards.sample} = $factor" >> {log}
 
+        # Now run bamCoverage with that factor
+        bamCoverage --bam {input.bam} \
+                    --outFileName {output} \
+                    --binSize {params.binSize} \
+                    --numberOfProcessors 4 \
+                    --scaleFactor $factor \
+                    {('--blackListFileName ' + '{params.blacklist}') if '{params.blacklist}' else ''} \
+                    2>> {log}
+        """
 
 ###############################################################################
 # RULE: Make CPM BigWigs (scer)
