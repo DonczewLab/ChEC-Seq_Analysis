@@ -1,44 +1,29 @@
 ## samples file
 samples_csv: "config/samples.csv"
 
-## turn on/off heat plots
-heatplot_all: True
-heatplot_unique: True
+# Genome indices
+spom_genome: "/path/to/spombe_bowtie2_index/spombe"
+dmel_genome: "/path/to/dmelanogaster_bowtie2_index/dmel"
 
-## genome-of-interest
-genome: "mm"
-# For human genome - "hs" / for mouse genome - "mm"
+# Blacklist (if you have one for spom)
+blacklist_spom: "/path/to/spombe_blacklist.bed"
 
-## sample order (indicate which sample should set the order of the midpoints.bed in heatmap [1 to nSamples])
-sampleOrder: 1,2,3,4,5,6
+# bbmap adapter file (used by BBDuk)
+bbmap_ref: "/path/to/bbmap/truseq_universal_adapters.fa"
 
-## effective genome size
-effective_genome_size: 2730871774
-# mm10 genome size - 2730871774       
-# GRCh38 genome size - 2913022398
+# Genome file (for bigWig creation via bedGraphToBigWig)
+genome_file_spom: "/path/to/spombe/genomefile.txt"
 
-## macs2 options
-macs2_qvalue: 0.05
-minNumberOfSampleOverlaps: 2
+# binSize, normalization, etc.
+binSize: 1
 
-## bamCoverage options
-binSize: 50
-
-## bedtobam
-chrom_sizes: "resources/mm10.chrom.sizes"
-# For human - "resources/hg38.chrom.sizes" / for mouse - "resources/mm10.chrom.sizes"
-
-## Euler plot parameters
-EulerFontSize: 8                          # Base font size for the Euler plot
-EulerColors1: "#4477AA,#228833,#CCBB44"   # Comma-separated hex colors for the plot
-EulerColors2: "#4477AA,#228833"           # Comma-separated hex colors for the plot
-EulerWidth: 5                             # Width of the PDF plot in inches
-EulerHeight: 5                            # Height of the PDF plot in inches
-
-## environment modules
-deeptools: "deeptools/3.4.3"
-macs2: "macs2/2.2.7.1"
-samtools: "samtools/1.14"
+# Module versions (example - adapt to your HPC)
+fastqc: "fastqc/0.12.1"
+multiqc: "multiqc/1.21"
+bbmap: "bbmap/39.06"
+bowtie2: "bowtie2/2.5.0"
+samtools: "samtools/1.18"
+deeptools: "deeptools/3.5.4"
 bedtools: "bedtools/2.30.0"
-R: "R/4.4.1-mkl"
-bioconductor: "bioconductor/3.19 gsl"
+ucsc: "ucsc/20200225"
+python: "python/3.10.2"
