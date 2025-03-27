@@ -96,17 +96,21 @@ A minimal test dataset can be placed in a `resources/` folder (not included by d
 
 ## 7) Examples of Output
 
-1. **Spike-In Factors**  
-- `results/spikein_factors/spikein_factors.csv`
+1. **Trimming and QC**  
+- FastQC HTML reports in `results/qc/fastqc/`
+- Trimmed FASTQs in `results/trimmed/`
 
-2. **Coverage Tracks**  
+2. **Aligned Files**
+- Primary BAM in `results/alignment/scer`
+- Spike-in BAM in `results/alignment/dmel`
+
+3. **Spike-In Factors**  
+- Spike-in factors in `results/spikein_factors/spikein_factors.csv`
+
+4. **Coverage Tracks**  
 - `*_raw.bw` in `results/bigwig/scer/raw/`
 - `*_CPM.bw` in `results/bigwig/scer/cpm/`
 - `*_SpikeIn.bw` in `results/bigwig/scer/spikein/`
-
-3. **Trimming and QC**  
-- FastQC HTML reports in `results/qc/fastqc/`
-- Trimmed FASTQs in `results/trimmed/`
 
 ---
 
