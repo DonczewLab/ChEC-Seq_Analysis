@@ -1,5 +1,3 @@
-# ChEC-seq_Analysis
-
 # CHEC-seq Analysis Snakemake Workflow
 
 ![CHEC Analysis](/images/CHECSeq_pipeline.png)  
