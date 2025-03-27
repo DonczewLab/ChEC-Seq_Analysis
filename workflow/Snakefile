@@ -186,7 +186,7 @@ rule align_scer:
 ##             Align to D. melanogaster (spike-in)              ##
 ##################################################################
 
-rule align_dmel:
+rule align_spikein:
     input:
         r1="results/trimmed/{sample}_R1_trimmed.fastq.gz",
         r2="results/trimmed/{sample}_R2_trimmed.fastq.gz"
@@ -199,7 +199,7 @@ rule align_dmel:
         config["bowtie2"],
         config["samtools"]
     log:
-        "results/logs/alignment/dmel/{sample}.log"
+        "results/logs/alignment/spikein/{sample}.log"
     shell:
         """
         bowtie2 --very-sensitive-local --threads 16 \
@@ -251,7 +251,7 @@ rule calc_spikein_factors:
     """
     input:
         scer_bams = expand("results/alignment/scer/{sample}.bam", sample=SAMPLES),
-        dmel_bams = expand("results/alignment/spikein/{sample}.bam", sample=SAMPLES)
+        spikein_bams = expand("results/alignment/spikein/{sample}.bam", sample=SAMPLES)
     output:
         "results/spikein_factors/spikein_factors.csv"
     envmodules:
@@ -261,7 +261,7 @@ rule calc_spikein_factors:
         "results/logs/spikein/calc_spikein.log"
     shell:
         """
-        python scripts/calc_spikein.py {output} {input.scer_bams} {input.dmel_bams} \
+        python scripts/calc_spikein.py {output} {input.scer_bams} {input.spikein_bams} \
         2> {log}
         """
 
