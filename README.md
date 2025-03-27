@@ -97,10 +97,7 @@ A minimal test dataset can be placed in a `resources/` folder (not included by d
 ## 7) Examples of Output
 
 1. **Spike-In Factors**  
-   In `results/spikein_factors/spikein_factors.csv`, you get something like:
-
-sample,scer_reads,dmel_reads,spikein_factor SampleA,4520123,450112,0.0995 SampleB,6102335,528002,0.0865 ...
-
+- `results/spikein_factors/spikein_factors.csv`
 
 2. **Coverage Tracks**  
 - `*_raw.bw` in `results/bigwig/scer/raw/`
