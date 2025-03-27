@@ -130,12 +130,14 @@ rule trim_adapters:
           threads=8 2> {log}
         """
 
-################################################################################
+
+###############################################################################
 # RULE: Align to S. cerevisiae (primary)
-################################################################################
+###############################################################################
 rule align_scer:
     input:
-        unpack(fq_dict_from_sample)
+        r1="results/trimmed/{sample}_R1_trimmed.fastq.gz",
+        r2="results/trimmed/{sample}_R2_trimmed.fastq.gz"
     output:
         bam="results/alignment/scer/{sample}.bam",
         bai="results/alignment/scer/{sample}.bam.bai"
@@ -158,12 +160,14 @@ rule align_scer:
         samtools index -@ 8 {output.bam} {output.bai}
         """
 
-################################################################################
+
+###############################################################################
 # RULE: Align to D. melanogaster (spike-in)
-################################################################################
+###############################################################################
 rule align_dmel:
     input:
-        unpack(fq_dict_from_sample)
+        r1="results/trimmed/{sample}_R1_trimmed.fastq.gz",
+        r2="results/trimmed/{sample}_R2_trimmed.fastq.gz"
     output:
         bam="results/alignment/dmel/{sample}.bam",
         bai="results/alignment/dmel/{sample}.bam.bai"
@@ -185,6 +189,7 @@ rule align_dmel:
         samtools sort -O bam -@ 8 -o {output.bam}
         samtools index -@ 8 {output.bam} {output.bai}
         """
+
 
 ################################################################################
 # RULE: Make Raw BigWig (scer)
