@@ -42,7 +42,6 @@ def fq_dict_from_sample(wildcards):
 # RULE: ALL
 ################################################################################
 rule all:
-    """Collect all final outputs of the pipeline."""
     input:
         # 1) FastQC
         expand("results/qc/fastqc/{sample}_R1_fastqc.html", sample=SAMPLES),
@@ -74,8 +73,6 @@ rule all:
 
         # 9) [Optional] mean coverage BigWigs (if merging replicates)
         # expand("results/bigwig/scer/cpm_mean/{sample}_CPM_mean.bw", sample=SAMPLES)
-    message:
-        "All pipeline outputs have been generated."
 
 ################################################################################
 # RULE: FastQC
