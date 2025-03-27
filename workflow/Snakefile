@@ -54,8 +54,6 @@ merge_groups = samples_df["merge_group"].unique().tolist()
 def bedgraphs_for_group(wildcards):
     """
     Return a list of bedGraph files belonging to 'merge_group' == wildcards.group.
-    E.g., if group='DMSO', collect all samples with merge_group='DMSO',
-    returning ['results/bedgraph/cpm/RDY226_DMSO_A_cpm.bg', ...].
     """
     # Filter samples by group
     samples_in_group = [
