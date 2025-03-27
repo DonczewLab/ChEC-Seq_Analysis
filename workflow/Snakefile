@@ -236,7 +236,7 @@ rule calc_spikein_factors:
         "results/logs/spikein/calc_spikein.log"
     shell:
         """
-        scripts/calc_spikein.py {output} {input.scer_bams} {input.dmel_bams} \
+        python scripts/calc_spikein.py {output} {input.scer_bams} {input.dmel_bams} \
         2> {log}
         """
 
