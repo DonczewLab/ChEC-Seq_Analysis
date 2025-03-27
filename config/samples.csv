@@ -1,7 +1,0 @@
-sample,fastq1,fastq2
-RDY226_DMSO_A,/resources/RDHTS789_S121_R1_001.fastq.gz,/resources/RDHTS789_S121_R2_001.fastq.gz
-RDY226_IAA_A,/resources/RDHTS790_S122_R1_001.fastq.gz,/resources/RDHTS790_S122_R2_001.fastq.gz
-RDY226_DMSO_B,/resources/RDHTS791_S123_R1_001.fastq.gz,/resources/RDHTS791_S123_R2_001.fastq.gz
-RDY226_IAA_B,/resources/RDHTS792_S124_R1_001.fastq.gz,/resources/RDHTS792_S124_R2_001.fastq.gz
-RDY226_DMSO_C,/resources/RDHTS793_S125_R1_001.fastq.gz,/resources/RDHTS793_S125_R2_001.fastq.gz
-RDY226_IAA_C,/resources/RDHTS794_S126_R1_001.fastq.gz,/resources/RDHTS794_S126_R2_001.fastq.gz
