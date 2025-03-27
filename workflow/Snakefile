@@ -387,7 +387,7 @@ rule merge_bedgraphs_mean_cpm:
     Adjust 'rep' to your replicate labels.
     """
     input:
-        expand("results/bedgraph/cpm/{{sample}}_{rep}.bg", rep=["1","2","3"])
+        "results/bedgraph/cpm/{sample}_cpm.bg"
     output:
         "results/bedgraph/cpm_mean/{sample}_cpm_mean.bg"
     envmodules:
