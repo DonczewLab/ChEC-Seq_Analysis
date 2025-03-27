@@ -1,7 +1,17 @@
 configfile: "config/config.yml"
 
-###############################################################################
-# S N A K E F I L E  for CHEC-seq
+##################################################################
+##                    Define input functions                    ##
+##################################################################
+
+# Author: Kevin Boyd
+# Date: March 27, 2025
+# Adapted from: Chec-Seq Protocol from Rafal Donczew & John Ridenour
+
+##################################################################
+##                  Explicit Steps in Pipeline                  ##
+##################################################################
+
 # Steps:
 #  1) FastQC
 #  2) Adapter Trim (BBDuk)
@@ -12,21 +22,20 @@ configfile: "config/config.yml"
 #  7) Create Spike-In Normalized BigWigs
 #  8) Create CPM Normalized BigWigs
 #  9) [Optional] Mean coverage BigWigs
-###############################################################################
+
+##################################################################
+##                    Define input functions                    ##
+##################################################################
 
 import os
 import pandas as pd
 
-################################################################################
-# Load sample table
-################################################################################
+# load samples table and set samples naming
 samples_df = pd.read_csv(config["samples_csv"])
 samples_df.set_index("sample", inplace=True, drop=False)
 SAMPLES = samples_df.index.tolist()
 
-################################################################################
-# Dictionary-based input function
-################################################################################
+# dictionary based input function
 def fq_dict_from_sample(wildcards):
     """
     Return a dict: {"r1": <R1path>, "r2": <R2path>} for each sample.
@@ -38,9 +47,10 @@ def fq_dict_from_sample(wildcards):
         "r2": row["fastq2"]
     }
 
-################################################################################
-# RULE: ALL
-################################################################################
+##################################################################
+##                          Rule All                            ##
+##################################################################
+
 rule all:
     input:
         # 1) FastQC
@@ -74,9 +84,11 @@ rule all:
         # 9) [Optional] mean coverage BigWigs (if merging replicates)
         # expand("results/bigwig/scer/cpm_mean/{sample}_CPM_mean.bw", sample=SAMPLES)
 
-################################################################################
-# RULE: FastQC
-################################################################################
+
+##################################################################
+##                       Quality Control                        ##
+##################################################################
+
 rule fastqc_raw:
     input:
         unpack(fq_dict_from_sample)
@@ -103,9 +115,11 @@ rule fastqc_raw:
         mv $dir/${{baseR2}}_fastqc.zip {output.zip2} || true
         """
 
-################################################################################
-# RULE: Adapter Trimming (BBDuk)
-################################################################################
+
+##################################################################
+##                      Adapter Trimming                        ##
+##################################################################
+
 rule trim_adapters:
     input:
         unpack(fq_dict_from_sample)
@@ -131,9 +145,10 @@ rule trim_adapters:
         """
 
 
-###############################################################################
-# RULE: Align to S. cerevisiae (primary)
-###############################################################################
+##################################################################
+##               Align to S. cerevisiae (primary)               ##
+##################################################################
+
 rule align_scer:
     input:
         r1="results/trimmed/{sample}_R1_trimmed.fastq.gz",
@@ -161,9 +176,10 @@ rule align_scer:
         """
 
 
-###############################################################################
-# RULE: Align to D. melanogaster (spike-in)
-###############################################################################
+##################################################################
+##             Align to D. melanogaster (spike-in)              ##
+##################################################################
+
 rule align_dmel:
     input:
         r1="results/trimmed/{sample}_R1_trimmed.fastq.gz",
@@ -191,9 +207,10 @@ rule align_dmel:
         """
 
 
-################################################################################
-# RULE: Make Raw BigWig (scer)
-################################################################################
+##################################################################
+##                   BigWig Generation (raw)                    ##
+##################################################################
+
 rule make_bigwig_raw_scer:
     input:
         "results/alignment/scer/{sample}.bam"
@@ -240,10 +257,11 @@ rule calc_spikein_factors:
         2> {log}
         """
 
-################################################################################
-# RULE: Make Spike-In Normalized BigWigs (scer)
-#        with a shell-based inline Python snippet
-################################################################################
+
+##################################################################
+##                 BigWig Generation (spike-in)                 ##
+##################################################################
+
 rule make_bigwig_scer_spikein:
     """
     Use the factor from spikein_factors.csv to scale coverage in scer BAM,
@@ -290,9 +308,10 @@ EOF
                     --blackListFileName {params.blacklist}
         """
 
-################################################################################
-# RULE: Make CPM BigWigs (scer)
-################################################################################
+##################################################################
+##                   BigWig Generation (cpm)                    ##
+##################################################################
+
 rule make_bigwig_scer_cpm:
     """
     Generate CPM-normalized bigWig from scer BAM.
@@ -317,6 +336,7 @@ rule make_bigwig_scer_cpm:
             --normalizeUsing CPM \
             --blackListFileName {params.blacklist}
         """
+
 
 ################################################################################
 # OPTIONAL: Mean Coverage BigWigs (if you have replicates)
