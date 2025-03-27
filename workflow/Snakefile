@@ -39,7 +39,7 @@ SAMPLES = samples_df.index.tolist()
 def fq_dict_from_sample(wildcards):
     """
     Return a dict: {"r1": <R1path>, "r2": <R2path>} for each sample.
-    We'll use 'unpack(...)' in the rules so we can reference input.r1, input.r2.
+    Use 'unpack(...)' in the rules so we can reference input.r1, input.r2.
     """
     row = samples_df.loc[wildcards.sample]
     return {
@@ -65,21 +65,21 @@ rule all:
         expand("results/alignment/scer/{sample}.bam", sample=SAMPLES),
         expand("results/alignment/scer/{sample}.bam.bai", sample=SAMPLES),
 
-        # 4) dmel BAM + BAI
-        expand("results/alignment/dmel/{sample}.bam", sample=SAMPLES),
-        expand("results/alignment/dmel/{sample}.bam.bai", sample=SAMPLES),
+        # 4) Spike-In (dmel) BAM + BAI
+        expand("results/alignment/spikeIn/{sample}.bam", sample=SAMPLES),
+        expand("results/alignment/spikeIn/{sample}.bam.bai", sample=SAMPLES),
 
         # 5) Raw BigWigs (scer)
-        expand("results/bigwig/scer/raw/{sample}_raw.bw", sample=SAMPLES),
+        expand("results/bigwig/raw/{sample}_raw.bw", sample=SAMPLES),
 
         # 6) single CSV with spike-in factors
         "results/spikein_factors/spikein_factors.csv",
 
         # 7) Spike-in normalized BigWigs (scer)
-        expand("results/bigwig/scer/spikein/{sample}_SpikeIn.bw", sample=SAMPLES),
+        expand("results/bigwig/spikein/{sample}_SpikeIn.bw", sample=SAMPLES),
 
         # 8) CPM BigWigs (scer)
-        expand("results/bigwig/scer/cpm/{sample}_CPM.bw", sample=SAMPLES),
+        expand("results/bigwig/cpm/{sample}_cpm.bw", sample=SAMPLES),
 
         # 9) [Optional] mean coverage BigWigs (if merging replicates)
         # expand("results/bigwig/scer/cpm_mean/{sample}_CPM_mean.bw", sample=SAMPLES)
@@ -157,7 +157,7 @@ rule align_scer:
         bam="results/alignment/scer/{sample}.bam",
         bai="results/alignment/scer/{sample}.bam.bai"
     params:
-        bowtie2_idx=config["scer_genome"]
+        bowtie2_scer=config["scer_genome"]
     envmodules:
         config["bowtie2"],
         config["samtools"]
@@ -166,7 +166,7 @@ rule align_scer:
     shell:
         """
         bowtie2 --very-sensitive-local --threads 16 \
-            -x {params.bowtie2_idx} \
+            -x {params.bowtie2_scer} \
             -1 {input.r1} -2 {input.r2} \
             --maxins 700 --dovetail --no-unal --no-mixed --no-discordant \
             2> {log} | \
@@ -215,7 +215,7 @@ rule make_bigwig_raw_scer:
     input:
         "results/alignment/scer/{sample}.bam"
     output:
-        "results/bigwig/scer/raw/{sample}_raw.bw"
+        "results/bigwig/raw/{sample}_raw.bw"
     params:
         binSize=config["binSize"],
         blacklist=config["blacklist_scer"]
@@ -271,7 +271,7 @@ rule make_bigwig_scer_spikein:
         bam="results/alignment/scer/{sample}.bam",
         csv="results/spikein_factors/spikein_factors.csv"
     output:
-        "results/bigwig/scer/spikein/{sample}_SpikeIn.bw"
+        "results/bigwig/spikein/{sample}_SpikeIn.bw"
     params:
         binSize=config["binSize"],
         blacklist=config["blacklist_scer"]
@@ -319,7 +319,7 @@ rule make_bigwig_scer_cpm:
     input:
         "results/alignment/scer/{sample}.bam"
     output:
-        "results/bigwig/scer/cpm/{sample}_CPM.bw"
+        "results/bigwig/cpm/{sample}_cpm.bw"
     params:
         binSize=config["binSize"],
         blacklist=config["blacklist_scer"]
