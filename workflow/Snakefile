@@ -66,8 +66,8 @@ rule all:
         expand("results/alignment/scer/{sample}.bam.bai", sample=SAMPLES),
 
         # 4) Spike-In (dmel) BAM + BAI
-        expand("results/alignment/spikeIn/{sample}.bam", sample=SAMPLES),
-        expand("results/alignment/spikeIn/{sample}.bam.bai", sample=SAMPLES),
+        expand("results/alignment/spikein/{sample}.bam", sample=SAMPLES),
+        expand("results/alignment/spikein/{sample}.bam.bai", sample=SAMPLES),
 
         # 5) Raw BigWigs
         expand("results/bigwig/raw/{sample}_raw.bw", sample=SAMPLES),
@@ -191,8 +191,8 @@ rule align_dmel:
         r1="results/trimmed/{sample}_R1_trimmed.fastq.gz",
         r2="results/trimmed/{sample}_R2_trimmed.fastq.gz"
     output:
-        bam="results/alignment/dmel/{sample}.bam",
-        bai="results/alignment/dmel/{sample}.bam.bai"
+        bam="results/alignment/spikein/{sample}.bam",
+        bai="results/alignment/spikein/{sample}.bam.bai"
     params:
         bowtie2_spikein=config["spikein_genome"]
     envmodules:
@@ -246,12 +246,12 @@ rule make_bigwig_raw_scer:
 
 rule calc_spikein_factors:
     """
-    Gather ALL scer + dmel BAMs, pass them to scripts/calc_spikein.py,
+    Gather ALL scer + spikein BAMs, pass them to scripts/calc_spikein.py,
     which writes results/spikein_factors/spikein_factors.csv.
     """
     input:
         scer_bams = expand("results/alignment/scer/{sample}.bam", sample=SAMPLES),
-        dmel_bams = expand("results/alignment/dmel/{sample}.bam", sample=SAMPLES)
+        dmel_bams = expand("results/alignment/spikein/{sample}.bam", sample=SAMPLES)
     output:
         "results/spikein_factors/spikein_factors.csv"
     envmodules:
