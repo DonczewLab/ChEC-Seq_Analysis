@@ -1,4 +1,4 @@
-# SLAMseq_Analysis
+# ChEC-seq_Analysis
 
 # 2) Instructions to run on Slurm managed HPC
 2A. Clone repository
