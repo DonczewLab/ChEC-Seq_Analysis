@@ -69,20 +69,26 @@ rule all:
         expand("results/alignment/spikeIn/{sample}.bam", sample=SAMPLES),
         expand("results/alignment/spikeIn/{sample}.bam.bai", sample=SAMPLES),
 
-        # 5) Raw BigWigs (scer)
+        # 5) Raw BigWigs
         expand("results/bigwig/raw/{sample}_raw.bw", sample=SAMPLES),
 
         # 6) single CSV with spike-in factors
         "results/spikein_factors/spikein_factors.csv",
 
-        # 7) Spike-in normalized BigWigs (scer)
+        # 7) Spike-in normalized BigWigs
         expand("results/bigwig/spikein/{sample}_SpikeIn.bw", sample=SAMPLES),
 
-        # 8) CPM BigWigs (scer)
+        # 8) CPM BigWigs
         expand("results/bigwig/cpm/{sample}_cpm.bw", sample=SAMPLES),
 
-        # 9) [Optional] mean coverage BigWigs (if merging replicates)
-        # expand("results/bigwig/scer/cpm_mean/{sample}_CPM_mean.bw", sample=SAMPLES)
+        # 9) CPM BegGraphs
+        # expand("results/bedgraph/cpm/{sample}_cpm.bg", sample=SAMPLES)
+
+        # 10) Mean coverage BedGraphs
+        # expand("results/bedgraph/cpm_mean/{sample}_cpm_mean.bg", sample=SAMPLES)
+
+        # 11) Mean coverage BigWigs
+        # expand("results/bigwig/cpm_mean/{sample}_cpm_mean.bw", sample=SAMPLES)
 
 
 ##################################################################
@@ -233,9 +239,11 @@ rule make_bigwig_raw_scer:
             --blackListFileName {params.blacklist}
         """
 
-################################################################################
-# RULE: Calculate Spike-In Factors (single CSV)
-################################################################################
+
+##################################################################
+##                  Calculate Spike-In Factors                  ##
+##################################################################
+
 rule calc_spikein_factors:
     """
     Gather ALL scer + dmel BAMs, pass them to scripts/calc_spikein.py,
@@ -338,9 +346,10 @@ rule make_bigwig_scer_cpm:
         """
 
 
-################################################################################
-# OPTIONAL: Mean Coverage BigWigs (if you have replicates)
-################################################################################
+##################################################################
+##                   Generate BedGraphs (CPM)                   ##
+##################################################################
+
 rule make_bedgraph_scer_cpm:
     """
     Make a CPM bedGraph from scer BAM. Then you can merge replicate bedGraphs.
@@ -348,7 +357,7 @@ rule make_bedgraph_scer_cpm:
     input:
         "results/alignment/scer/{sample}.bam"
     output:
-        "results/bedgraph/scer/cpm/{sample}.bg"
+        "results/bedgraph/cpm/{sample}_cpm.bg"
     params:
         binSize=config["binSize"],
         blacklist=config["blacklist_scer"]
@@ -367,15 +376,20 @@ rule make_bedgraph_scer_cpm:
             --blackListFileName {params.blacklist}
         """
 
+
+##################################################################
+##                  Merge Bedgraphs (Mean CPM)                  ##
+##################################################################
+
 rule merge_bedgraphs_mean_cpm:
     """
     Union multiple replicate bedGraphs for a sample, compute mean coverage.
     Adjust 'rep' to your replicate labels.
     """
     input:
-        expand("results/bedgraph/scer/cpm/{{sample}}_{rep}.bg", rep=["1","2","3"])
+        expand("results/bedgraph/cpm/{{sample}}_{rep}.bg", rep=["1","2","3"])
     output:
-        "results/bedgraph/scer/cpm_mean/{sample}.bg"
+        "results/bedgraph/cpm_mean/{sample}_cpm_mean.bg"
     envmodules:
         config["bedtools"]
     log:
@@ -390,14 +404,19 @@ rule merge_bedgraphs_mean_cpm:
         }' | sort -k1,1 -k2,2n > {output}
         """
 
+
+##################################################################
+##               Mean Coverage BedGraph to BigWig               ##
+##################################################################
+
 rule bedgraph_to_bigwig_mean_cpm:
     """
     Convert the mean-coverage bedGraph to BigWig.
     """
     input:
-        "results/bedgraph/scer/cpm_mean/{sample}.bg"
+        "results/bedgraph/cpm_mean/{sample}.bg"
     output:
-        "results/bigwig/scer/cpm_mean/{sample}_CPM_mean.bw"
+        "results/bigwig/cpm_mean/{sample}_cpm_mean.bw"
     params:
         genome_file=config["genome_file_scer"]
     envmodules:
@@ -408,4 +427,3 @@ rule bedgraph_to_bigwig_mean_cpm:
         """
         bedGraphToBigWig {input} {params.genome_file} {output} 2> {log}
         """
-
