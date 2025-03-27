@@ -21,7 +21,9 @@ configfile: "config/config.yml"
 #  6) Calculate Spike-In Factors (all samples -> single CSV)
 #  7) Create Spike-In Normalized BigWigs
 #  8) Create CPM Normalized BigWigs
-#  9) [Optional] Mean coverage BigWigs
+#  9) Create CPM Normalized BedGraphs
+#  10) Mean coverage BedGraphs
+#  11) Mean coverage BigWigs
 
 ##################################################################
 ##                    Define input functions                    ##
