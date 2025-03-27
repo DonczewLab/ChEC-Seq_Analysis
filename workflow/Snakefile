@@ -172,7 +172,7 @@ rule align_dmel:
         bam="results/alignment/dmel/{sample}.bam",
         bai="results/alignment/dmel/{sample}.bam.bai"
     params:
-        bowtie2_idx=config["dmel_genome"]
+        bowtie2_spikein=config["spikein_genome"]
     envmodules:
         config["bowtie2"],
         config["samtools"]
@@ -181,7 +181,7 @@ rule align_dmel:
     shell:
         """
         bowtie2 --very-sensitive-local --threads 16 \
-            -x {params.bowtie2_idx} \
+            -x {params.bowtie2_spikein} \
             -1 {input.r1} -2 {input.r2} \
             --maxins 700 --dovetail --no-unal --no-mixed --no-discordant \
             2> {log} | \
