@@ -9,8 +9,6 @@
 
 **CHEC-seq Analysis Snakemake Workflow** is a Snakemake pipeline designed for Chromatin Endogenous Cleavage (CHEC) experiments. Rather than manually invoking each step (QC, trimming, alignment, coverage generation), this pipeline automates the entire process from **raw FASTQ** inputs to **multiple coverage tracks** (raw, CPM, and spike-in normalized).
 
-+ **Note**: If you already have pre-aligned BAM files or want specialized downstream analyses (e.g., replicate merging, advanced peak calling), you can adapt or extend this pipeline accordingly.
-
 ### Key Features
 
 - **Flexible Spike-In Normalization**  
@@ -80,9 +78,6 @@ This Snakemake pipeline relies on:
 
 A minimal test dataset can be placed in a `resources/` folder (not included by default). Update `samples.csv` to point to these FASTQs for a quick test run. Once confirmed, replace with your real CHEC-seq data.
 
-**Directory structure** after a successful run typically looks like:
-
-
 ---
 
 ## 6) Explanation of `samples.csv`
@@ -94,10 +89,8 @@ A minimal test dataset can be placed in a `resources/` folder (not included by d
 | **SampleA**        | /path/to/SampleA_R1.fastq.gz  | /path/to/SampleA_R2.fastq.gz |
 | **SampleB**        | /path/to/SampleB_R1.fastq.gz  | /path/to/SampleB_R2.fastq.gz |
 
-+ **sample**: unique sample ID
++ **sample**: unique sample ID that will serve as file naming convention downstream
 + **fastq1** and **fastq2**: file paths to paired-end reads
-
-If single-end, you’d adapt the pipeline or put a dummy second read in place.
 
 ---
 
