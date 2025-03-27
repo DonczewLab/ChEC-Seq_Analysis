@@ -31,8 +31,7 @@ import os
 import pandas as pd
 
 # load samples table and set samples naming
-samples_df = pd.read_csv(config["samples_csv"])
-samples_df.set_index("sample", inplace=True, drop=False)
+samples_df = pd.read_csv("config/samples.csv").set_index("sample", drop=False)
 SAMPLES = samples_df.index.tolist()
 
 # dictionary based input function
@@ -46,6 +45,26 @@ def fq_dict_from_sample(wildcards):
         "r1": row["fastq1"],
         "r2": row["fastq2"]
     }
+
+# Extract unique merge groups from the new column (e.g. DMSO, IAA, etc.)
+merge_groups = samples_df["merge_group"].unique().tolist()
+
+def bedgraphs_for_group(wildcards):
+    """
+    Return a list of bedGraph files belonging to 'merge_group' == wildcards.group.
+    E.g., if group='DMSO', collect all samples with merge_group='DMSO',
+    returning ['results/bedgraph/cpm/RDY226_DMSO_A_cpm.bg', ...].
+    """
+    # Filter samples by group
+    samples_in_group = [
+        s for s in SAMPLES
+        if samples_df.loc[s, "merge_group"] == wildcards.group
+    ]
+    # Build the bedGraph filenames for those samples
+    return [
+        f"results/bedgraph/cpm/{sample}_cpm.bg"
+        for sample in samples_in_group
+    ]
 
 ##################################################################
 ##                          Rule All                            ##
@@ -85,10 +104,10 @@ rule all:
         expand("results/bedgraph/cpm/{sample}_cpm.bg", sample=SAMPLES),
 
         # 10) Mean coverage BedGraphs
-        expand("results/bedgraph/cpm_mean/{sample}_cpm_mean.bg", sample=SAMPLES),
+        expand("results/bedgraph/cpm_mean/{group}_cpm_mean.bg", group=merge_groups),
 
         # 11) Mean coverage BigWigs
-        expand("results/bigwig/cpm_mean/{sample}_cpm_mean.bw", sample=SAMPLES)
+        expand("results/bigwig/cpm_mean/{group}_cpm_mean.bw", group=merge_groups)
 
 
 ##################################################################
@@ -351,9 +370,6 @@ rule make_bigwig_scer_cpm:
 ##################################################################
 
 rule make_bedgraph_scer_cpm:
-    """
-    Make a CPM bedGraph from scer BAM. Then you can merge replicate bedGraphs.
-    """
     input:
         "results/alignment/scer/{sample}.bam"
     output:
@@ -364,16 +380,18 @@ rule make_bedgraph_scer_cpm:
     envmodules:
         config["deeptools"]
     log:
-        "results/logs/bedgraph/scer_cpm/{sample}.log"
+        "results/logs/bedgraph/{sample}_cpm.log"
     shell:
         """
-        bamCoverage --bam {input} \
-            --outFileName {output} \
-            --outFileFormat bedgraph \
-            --binSize {params.binSize} \
-            --numberOfProcessors 4 \
-            --normalizeUsing CPM \
-            --blackListFileName {params.blacklist}
+        bamCoverage \
+          --bam {input} \
+          --outFileName {output} \
+          --outFileFormat bedgraph \
+          --binSize {params.binSize} \
+          --numberOfProcessors 4 \
+          --normalizeUsing CPM \
+          --blackListFileName {params.blacklist} \
+          2> {log}
         """
 
 
@@ -383,25 +401,24 @@ rule make_bedgraph_scer_cpm:
 
 rule merge_bedgraphs_mean_cpm:
     """
-    Union multiple replicate bedGraphs for a sample, compute mean coverage.
-    Adjust 'rep' to your replicate labels.
+    Combine all bedGraphs for a given merge_group (e.g., DMSO, IAA) into one.
+    Then average coverage across the replicate bedGraphs, using bedtools unionbedg.
     """
     input:
-        "results/bedgraph/cpm/{sample}_cpm.bg"
+        bedgraphs_for_group
     output:
-        "results/bedgraph/cpm_mean/{sample}_cpm_mean.bg"
+        "results/bedgraph/cpm_mean/{group}_cpm_mean.bg"
     envmodules:
         config["bedtools"]
     log:
-        "results/logs/bedgraph/merge_{sample}.log"
+        "results/logs/bedgraph/merge_{group}.log"
     shell:
         r"""
         bedtools unionbedg -i {input} | \
-        awk 'OFS="\t" {
-          sum=0; 
-          for (i=4; i<=NF; i++) sum+=$i;
-          print $1,$2,$3,sum/(NF-3)
-        }' | sort -k1,1 -k2,2n > {output}
+        awk 'OFS="\t" {{
+          sum=0; for (col=4; col<=NF; col++) sum += $col;
+          print $1,$2,$3,sum/(NF-3);
+        }}' | sort -k1,1 -k2,2n > {output}
         """
 
 
@@ -410,19 +427,16 @@ rule merge_bedgraphs_mean_cpm:
 ##################################################################
 
 rule bedgraph_to_bigwig_mean_cpm:
-    """
-    Convert the mean-coverage bedGraph to BigWig.
-    """
     input:
-        "results/bedgraph/cpm_mean/{sample}.bg"
+        "results/bedgraph/cpm_mean/{group}.bg"
     output:
-        "results/bigwig/cpm_mean/{sample}_cpm_mean.bw"
+        "results/bigwig/cpm_mean/{group}_cpm_mean.bw"
     params:
         genome_file=config["genome_file_scer"]
     envmodules:
         config["ucsc"]
     log:
-        "results/logs/bedgraph/bw_mean_{sample}.log"
+        "results/logs/bedgraph/bw_mean_{group}.log"
     shell:
         """
         bedGraphToBigWig {input} {params.genome_file} {output} 2> {log}
