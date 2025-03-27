@@ -82,13 +82,13 @@ rule all:
         expand("results/bigwig/cpm/{sample}_cpm.bw", sample=SAMPLES),
 
         # 9) CPM BegGraphs
-        # expand("results/bedgraph/cpm/{sample}_cpm.bg", sample=SAMPLES)
+        expand("results/bedgraph/cpm/{sample}_cpm.bg", sample=SAMPLES)
 
         # 10) Mean coverage BedGraphs
-        # expand("results/bedgraph/cpm_mean/{sample}_cpm_mean.bg", sample=SAMPLES)
+        expand("results/bedgraph/cpm_mean/{sample}_cpm_mean.bg", sample=SAMPLES)
 
         # 11) Mean coverage BigWigs
-        # expand("results/bigwig/cpm_mean/{sample}_cpm_mean.bw", sample=SAMPLES)
+        expand("results/bigwig/cpm_mean/{sample}_cpm_mean.bw", sample=SAMPLES)
 
 
 ##################################################################
