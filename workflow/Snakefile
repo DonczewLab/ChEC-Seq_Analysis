@@ -428,7 +428,7 @@ rule merge_bedgraphs_mean_cpm:
 
 rule bedgraph_to_bigwig_mean_cpm:
     input:
-        "results/bedgraph/cpm_mean/{group}.bg"
+        "results/bedgraph/cpm_mean/{group}_cpm_mean.bg"
     output:
         "results/bigwig/cpm_mean/{group}_cpm_mean.bw"
     params:
