@@ -6,7 +6,11 @@ __default__:
   cpus-per-task: 2
   mem: "16G"
   output: logs/slurm-%x.%A.%a.log
+  error: logs/slurm-%x.%A.%a.err
 
+# ------------------------------------------------------------------------------
+# Quality Control
+# ------------------------------------------------------------------------------
 fastqc_raw:
   cpus-per-task: 4
   mem: "32G"
@@ -22,34 +26,41 @@ trim_adapters:
   cores: 8
   time: "02:00:00"
   name: "{rule}.{wildcards.sample}"
+  output: logs/{rule}.{wildcards.sample}.out
+  error: logs/{rule}.{wildcards.sample}.err
 
+# ------------------------------------------------------------------------------
+# Alignment
+# ------------------------------------------------------------------------------
 align_scer:
   cpus-per-task: 16
   mem: "64G"
   cores: 16
   time: "08:00:00"
   name: "{rule}.{wildcards.sample}"
+  output: logs/{rule}.{wildcards.sample}.out
+  error: logs/{rule}.{wildcards.sample}.err
 
-align_dmel:
+align_spikein:
   cpus-per-task: 16
   mem: "64G"
   cores: 16
   time: "08:00:00"
   name: "{rule}.{wildcards.sample}"
+  output: logs/{rule}.{wildcards.sample}.out
+  error: logs/{rule}.{wildcards.sample}.err
 
+# ------------------------------------------------------------------------------
+# BigWig creation
+# ------------------------------------------------------------------------------
 make_bigwig_raw_scer:
   cpus-per-task: 4
   mem: "16G"
   cores: 4
   time: "02:00:00"
   name: "{rule}.{wildcards.sample}"
-
-calc_spikein_factors:
-  cpus-per-task: 2
-  mem: "16G"
-  cores: 2
-  time: "02:00:00"
-  name: "{rule}"
+  output: logs/{rule}.{wildcards.sample}.out
+  error: logs/{rule}.{wildcards.sample}.err
 
 make_bigwig_scer_spikein:
   cpus-per-task: 4
@@ -57,6 +68,8 @@ make_bigwig_scer_spikein:
   cores: 4
   time: "02:00:00"
   name: "{rule}.{wildcards.sample}"
+  output: logs/{rule}.{wildcards.sample}.out
+  error: logs/{rule}.{wildcards.sample}.err
 
 make_bigwig_scer_cpm:
   cpus-per-task: 4
@@ -64,3 +77,89 @@ make_bigwig_scer_cpm:
   cores: 4
   time: "02:00:00"
   name: "{rule}.{wildcards.sample}"
+  output: logs/{rule}.{wildcards.sample}.out
+  error: logs/{rule}.{wildcards.sample}.err
+
+bedgraph_to_bigwig_mean_cpm:
+  cpus-per-task: 4
+  mem: "16G"
+  cores: 4
+  time: "01:00:00"
+  name: "{rule}.{wildcards.group}"
+  output: logs/{rule}.{wildcards.group}.out
+  error: logs/{rule}.{wildcards.group}.err
+
+# ------------------------------------------------------------------------------
+# BedGraph creation
+# ------------------------------------------------------------------------------
+make_bedgraph_raw_scer:
+  cpus-per-task: 4
+  mem: "16G"
+  cores: 4
+  time: "02:00:00"
+  name: "{rule}.{wildcards.sample}"
+  output: logs/{rule}.{wildcards.sample}.out
+  error: logs/{rule}.{wildcards.sample}.err
+
+make_bedgraph_scer_spikein:
+  cpus-per-task: 4
+  mem: "16G"
+  cores: 4
+  time: "02:00:00"
+  name: "{rule}.{wildcards.sample}"
+  output: logs/{rule}.{wildcards.sample}.out
+  error: logs/{rule}.{wildcards.sample}.err
+
+make_bedgraph_scer_cpm:
+  cpus-per-task: 4
+  mem: "16G"
+  cores: 4
+  time: "02:00:00"
+  name: "{rule}.{wildcards.sample}"
+  output: logs/{rule}.{wildcards.sample}.out
+  error: logs/{rule}.{wildcards.sample}.err
+
+# ------------------------------------------------------------------------------
+# Merging coverage
+# ------------------------------------------------------------------------------
+merge_bedgraphs_mean_cpm:
+  cpus-per-task: 4
+  mem: "16G"
+  cores: 4
+  time: "02:00:00"
+  name: "{rule}.{wildcards.group}"
+  output: logs/{rule}.{wildcards.group}.out
+  error: logs/{rule}.{wildcards.group}.err
+
+# ------------------------------------------------------------------------------
+# Calculating spike-in
+# ------------------------------------------------------------------------------
+calc_spikein_factors:
+  cpus-per-task: 2
+  mem: "16G"
+  cores: 2
+  time: "02:00:00"
+  name: "{rule}"
+  output: logs/{rule}.out
+  error: logs/{rule}.err
+
+# ------------------------------------------------------------------------------
+# WIG conversion
+# ------------------------------------------------------------------------------
+bedgraph_to_wig_mean_cpm:
+  cpus-per-task: 2
+  mem: "8G"
+  cores: 2
+  time: "01:00:00"
+  name: "{rule}.{wildcards.group}"
+  output: logs/{rule}.{wildcards.group}.out
+  error: logs/{rule}.{wildcards.group}.err
+
+bedgraph_to_wig_cpm:
+  cpus-per-task: 2
+  mem: "8G"
+  cores: 2
+  time: "01:00:00"
+  name: "{rule}.{wildcards.sample}"
+  output: logs/{rule}.{wildcards.sample}.out
+  error: logs/{rule}.{wildcards.sample}.err
