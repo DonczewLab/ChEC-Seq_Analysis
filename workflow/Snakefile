@@ -583,3 +583,60 @@ rule bedgraph_to_wig_cpm:
         python scripts/convert_bedgraph_to_wig.py {input.cpm} {output.wig_cpm} 2> {log.log_cpm}
         python scripts/convert_bedgraph_to_wig.py {input.spikein} {output.wig_spikein} 2> {log.log_spikein}
         """
+
+
+##################################################################
+##          Plot Alignment Stats (Stacked Bar & Box Plots)      ##
+##################################################################
+rule plot_alignment_stats:
+    input:
+        logs = expand("results/logs/alignment/scer/{sample}.log", sample=SAMPLES),
+        spikein_csv = "results/spikein_factors/spikein_factors.csv"
+    output:
+        "results/plots/alignment_stats.png"
+    envmodules:
+        config["R"]
+    log:
+        "results/logs/plots/alignment_stats.log"
+    shell:
+        """
+        Rscript scripts/plot_alignment_stats.R results/logs/alignment/scer/ {input.spikein_csv} {output}
+        """
+
+
+##################################################################
+##            Generate Fragment Length Files                  ##
+##################################################################
+rule generate_fragment_length:
+    input:
+        bam="results/alignment/scer/{sample}.bam"
+    output:
+        "results/alignment/scer/{sample}_fragmentLen.txt"
+    envmodules:
+        config["samtools"]
+    log:
+        "results/logs/alignment/fragmentLen_{sample}.log"
+    shell:
+        """
+        samtools view -F 0x04 {input.bam} | \
+        awk -F'\\t' '{{print ($9 < 0 ? -$9 : $9)}}' | \
+        sort | uniq -c | awk -v OFS="\\t" '{{print $2, $1}}' > {output}
+        """
+
+
+##################################################################
+##          Plot Fragment Length Distribution (Violin)        ##
+##################################################################
+rule plot_fragment_length:
+    input:
+        fragFiles = expand("results/alignment/scer/{sample}_fragmentLen.txt", sample=SAMPLES)
+    output:
+        "results/plots/fragment_length_plot.png"
+    envmodules:
+        config["R"]
+    log:
+        "results/logs/plots/fragment_length_plot.log"
+    shell:
+        """
+        Rscript scripts/plot_fragment_length.R {input.fragFiles} results/plots/ 2> {log}
+        """
