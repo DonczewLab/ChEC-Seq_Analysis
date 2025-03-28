@@ -572,8 +572,8 @@ rule bedgraph_to_wig_cpm:
     envmodules:
         config["python"]
     log:
-        log_raw="results/logs/bedgraph/wig_convert_{sample}_raw.log"
-        log_cpm="results/logs/bedgraph/wig_convert_{sample}_cpm.log"
+        log_raw="results/logs/bedgraph/wig_convert_{sample}_raw.log",
+        log_cpm="results/logs/bedgraph/wig_convert_{sample}_cpm.log",
         log_spikein="results/logs/bedgraph/wig_convert_{sample}_spikein.log"
     shell:
         """
