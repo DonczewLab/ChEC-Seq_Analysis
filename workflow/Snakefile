@@ -18,12 +18,15 @@ configfile: "config/config.yml"
 #  3) Align to S. cerevisiae (primary, no spike-in)
 #  4) Align to D. melanogaster (spike-in)
 #  5) Create Raw BigWig (from scer)
-#  6) Calculate Spike-In Factors (all samples -> single CSV)
-#  7) Create Spike-In Normalized BigWigs
-#  8) Create CPM Normalized BigWigs
-#  9) Create CPM Normalized BedGraphs
-#  10) Mean coverage BedGraphs
-#  11) Mean coverage BigWigs
+#  6) Create Raw BedGraph (from scer)
+#  7) Calculate Spike-In Factors (all samples -> single CSV)
+#  8) Create Spike-In Normalized BigWigs
+#  9) Create Spike-In Normalized BedGraph
+#  10) Create CPM Normalized BigWigs
+#  11) Create CPM Normalized BedGraphs
+#  12) Mean coverage BedGraphs
+#  13) Mean coverage BigWigs
+#  14) Make all Wigs
 
 ##################################################################
 ##                    Define input functions                    ##
@@ -91,27 +94,35 @@ rule all:
         # 5) Raw BigWigs
         expand("results/bigwig/raw/{sample}_raw.bw", sample=SAMPLES),
 
-        # 6) single CSV with spike-in factors
+        # 6) Raw BedGraph
+        expand("results/bedgraph/raw/{sample}_raw.bg", sample=SAMPLES),
+
+        # 7) single CSV with spike-in factors
         "results/spikein_factors/spikein_factors.csv",
 
-        # 7) Spike-in normalized BigWigs
+        # 8) Spike-in normalized BigWigs
         expand("results/bigwig/spikein/{sample}_SpikeIn.bw", sample=SAMPLES),
 
-        # 8) CPM BigWigs
+        # 9) Spike-in normalized BedGraph
+        expand("results/bedgraph/spikein/{sample}_SpikeIn.bg", sample=SAMPLES),
+
+        # 10) CPM BigWigs
         expand("results/bigwig/cpm/{sample}_cpm.bw", sample=SAMPLES),
 
-        # 9) CPM BegGraphs
+        # 11) CPM BegGraphs
         expand("results/bedgraph/cpm/{sample}_cpm.bg", sample=SAMPLES),
 
-        # 10) Mean coverage BedGraphs
+        # 12) Mean coverage BedGraphs
         expand("results/bedgraph/cpm_mean/{group}_cpm_mean.bg", group=merge_groups),
 
-        # 11) Mean coverage BigWigs
+        # 13) Mean coverage BigWigs
         expand("results/bigwig/cpm_mean/{group}_cpm_mean.bw", group=merge_groups),
 
-        # 12) Make all Wigs
-        expand("results/wig/cpm_mean/{group}_cpm_mean.wig", group=merge_groups),
-        expand("results/wig/cpm/{sample}_cpm.wig", sample=SAMPLES)
+        # 14) Make all Wigs
+        expand("results/wig/raw/{sample}_raw.wig", sample=SAMPLES),
+        expand("results/wig/spikein/{sample}_spikein.wig", sample=SAMPLES),
+        expand("results/wig/cpm/{sample}_cpm.wig", sample=SAMPLES),
+        expand("results/wig/cpm_mean/{group}_cpm_mean.wig", group=merge_groups)
 
 
 ##################################################################
@@ -264,6 +275,33 @@ rule make_bigwig_raw_scer:
 
 
 ##################################################################
+##                  BedGraph Generation (raw)                   ##
+##################################################################
+
+rule make_bedgraph_raw_scer:
+    input:
+        "results/alignment/scer/{sample}.bam"
+    output:
+        "results/bedgraph/raw/{sample}_raw.bg"
+    params:
+        binSize=config["binSize"],
+        blacklist=config["blacklist_scer"]
+    envmodules:
+        config["deeptools"]
+    log:
+        "results/logs/bedgraph/scer_raw/{sample}.log"
+    shell:
+        """
+        bamCoverage --bam {input} \
+            --outFileName {output} \
+            --binSize {params.binSize} \
+            --numberOfProcessors 4 \
+            --normalizeUsing None \
+            --blackListFileName {params.blacklist}
+        """
+
+
+##################################################################
 ##                  Calculate Spike-In Factors                  ##
 ##################################################################
 
@@ -339,6 +377,58 @@ EOF
                     --blackListFileName {params.blacklist}
         """
 
+
+##################################################################
+##                BedGraph Generation (spike-in)                ##
+##################################################################
+
+rule make_bedgraph_scer_spikein:
+    """
+    Use the factor from spikein_factors.csv to scale coverage in scer BAM,
+    producing a spike-in normalized bigWig.
+    """
+    input:
+        bam="results/alignment/scer/{sample}.bam",
+        csv="results/spikein_factors/spikein_factors.csv"
+    output:
+        "results/bedgraph/spikein/{sample}_SpikeIn.bg"
+    params:
+        binSize=config["binSize"],
+        blacklist=config["blacklist_scer"]
+    envmodules:
+        config["deeptools"],
+        config["python"]
+    log:
+        "results/logs/bedgraph/spikein/{sample}.log"
+    shell:
+        r"""
+        # 1) Extract the factor for this sample from CSV
+        factor=$(python <<EOF
+import csv
+sample_name = "{wildcards.sample}"
+factor = 1.0
+with open("{input.csv}", "r") as inf:
+    reader = csv.DictReader(inf)
+    for row in reader:
+        if row["sample"] == sample_name:
+            factor = float(row["spikein_factor"])
+            break
+print(factor)
+EOF
+)
+
+        echo "Spike-in factor for {wildcards.sample} = $factor" >> {log}
+
+        # 2) Run bamCoverage with that scale factor
+        bamCoverage --bam {input.bam} \
+                    --outFileName {output} \
+                    --binSize {params.binSize} \
+                    --numberOfProcessors 4 \
+                    --scaleFactor $factor \
+                    --blackListFileName {params.blacklist}
+        """
+
+
 ##################################################################
 ##                   BigWig Generation (cpm)                    ##
 ##################################################################
@@ -370,7 +460,7 @@ rule make_bigwig_scer_cpm:
 
 
 ##################################################################
-##                   Generate BedGraphs (CPM)                   ##
+##                   Generate BedGraphs (cpm)                   ##
 ##################################################################
 
 rule make_bedgraph_scer_cpm:
@@ -472,14 +562,22 @@ rule bedgraph_to_wig_mean_cpm:
 
 rule bedgraph_to_wig_cpm:
     input:
-        cpm="results/bedgraph/cpm/{sample}_cpm.bg"
+        raw="results/bedgraph/raw/{sample}_raw.bg",
+        cpm="results/bedgraph/cpm/{sample}_cpm.bg",
+        spikein="results/bedgraph/spikein/{sample}_spikein.bg"
     output:
-        wig_cpm="results/wig/cpm/{sample}_cpm.wig"
+        wig_raw="results/wig/raw/{sample}_raw.wig",
+        wig_cpm="results/wig/cpm/{sample}_cpm.wig",
+        wig_spikein="results/wig/spikein/{sample}_spikein.wig"
     envmodules:
         config["python"]
     log:
-        "results/logs/bedgraph/wig_convert_{sample}.log"
+        log_raw="results/logs/bedgraph/wig_convert_{sample}_raw.log"
+        log_cpm="results/logs/bedgraph/wig_convert_{sample}_cpm.log"
+        log_spikein="results/logs/bedgraph/wig_convert_{sample}_spikein.log"
     shell:
         """
-        python scripts/convert_bedgraph_to_wig.py {input.cpm} {output.wig_cpm} 2> {log}
+        python scripts/convert_bedgraph_to_wig.py {input.raw} {output.wig_raw} 2> {log.log_raw}
+        python scripts/convert_bedgraph_to_wig.py {input.cpm} {output.wig_cpm} 2> {log.log_cpm}
+        python scripts/convert_bedgraph_to_wig.py {input.spikein} {output.wig_spikein} 2> {log.log_spikein}
         """
