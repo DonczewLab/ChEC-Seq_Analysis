@@ -27,6 +27,9 @@ configfile: "config/config.yml"
 #  12) Mean coverage BedGraphs
 #  13) Mean coverage BigWigs
 #  14) Make all Wigs
+#  15) Alignment Stats Plot
+#  16) Fragment Length Files
+#  17) Fragment Length Distribution
 
 ##################################################################
 ##                    Define input functions                    ##
@@ -123,6 +126,15 @@ rule all:
         expand("results/wig/spikein/{sample}_spikein.wig", sample=SAMPLES),
         expand("results/wig/cpm/{sample}_cpm.wig", sample=SAMPLES),
         expand("results/wig/cpm_mean/{group}_cpm_mean.wig", group=merge_groups)
+
+        # 15) Alignment Stats Plot (stacked bar and box plots)
+        "results/plots/alignment_stats.png",
+
+        # 16) Fragment Length Files
+        expand("results/alignment/scer/{sample}_fragmentLen.txt", sample=SAMPLES),
+
+        # 17) Fragment Length Distribution Plot (violin & line plots)
+        "results/plots/fragment_length_plot.png"
 
 
 ##################################################################
