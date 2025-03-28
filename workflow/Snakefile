@@ -294,6 +294,7 @@ rule make_bedgraph_raw_scer:
         """
         bamCoverage --bam {input} \
             --outFileName {output} \
+            --outFileFormat bedgraph \
             --binSize {params.binSize} \
             --numberOfProcessors 4 \
             --normalizeUsing None \
@@ -422,6 +423,7 @@ EOF
         # 2) Run bamCoverage with that scale factor
         bamCoverage --bam {input.bam} \
                     --outFileName {output} \
+                    --outFileFormat bedgraph \
                     --binSize {params.binSize} \
                     --numberOfProcessors 4 \
                     --scaleFactor $factor \
