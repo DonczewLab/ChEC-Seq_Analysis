@@ -125,7 +125,7 @@ rule all:
         expand("results/wig/raw/{sample}_raw.wig", sample=SAMPLES),
         expand("results/wig/spikein/{sample}_spikein.wig", sample=SAMPLES),
         expand("results/wig/cpm/{sample}_cpm.wig", sample=SAMPLES),
-        expand("results/wig/cpm_mean/{group}_cpm_mean.wig", group=merge_groups)
+        expand("results/wig/cpm_mean/{group}_cpm_mean.wig", group=merge_groups),
 
         # 15) Alignment Stats Plot (stacked bar and box plots)
         "results/plots/alignment_stats.png",
