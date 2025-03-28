@@ -118,7 +118,7 @@ A minimal test dataset can be placed in a `resources/` folder (not included curr
 4. **Coverage Tracks** (BigWigs)  
   + `*_raw.bw` in `results/bigwig/raw/`  
   + `*_cpm.bw` in `results/bigwig/cpm/`  
-  + `*_SpikeIn.bw` in `results/bigwig/spikein/`  
+  + `*_spikein.bw` in `results/bigwig/spikein/`  
 
 5. **CPM BedGraphs**
   + `*_raw.bg` in `results/bedgraph/raw/`  
@@ -130,7 +130,7 @@ A minimal test dataset can be placed in a `resources/` folder (not included curr
   + `*_raw.wig` in `results/wig/raw/`  
   + `*_cpm.wig` in `results/wig/cpm/`  
   + `*_spikein.wig` in `results/wig/spikein/`       
-  + Merged WIG: `results/wig/cpm_mean/{group}_cpm_mean.wig`
+  + Merged Wig: `results/wig/cpm_mean/{group}_cpm_mean.wig`
 
 ---
 
