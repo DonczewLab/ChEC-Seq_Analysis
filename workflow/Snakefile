@@ -107,7 +107,11 @@ rule all:
         expand("results/bedgraph/cpm_mean/{group}_cpm_mean.bg", group=merge_groups),
 
         # 11) Mean coverage BigWigs
-        expand("results/bigwig/cpm_mean/{group}_cpm_mean.bw", group=merge_groups)
+        expand("results/bigwig/cpm_mean/{group}_cpm_mean.bw", group=merge_groups),
+
+        # 12) Make all Wigs
+        expand("results/wig/cpm_mean/{group}_cpm_mean.wig", group=merge_groups),
+        expand("results/wig/cpm/{sample}_cpm.wig", sample=SAMPLES)
 
 
 ##################################################################
@@ -440,4 +444,42 @@ rule bedgraph_to_bigwig_mean_cpm:
     shell:
         """
         bedGraphToBigWig {input} {params.genome_file} {output} 2> {log}
+        """
+
+
+##################################################################
+##          Convert Mean Coverage BedGraph to WIG File          ##
+##################################################################
+
+rule bedgraph_to_wig_mean_cpm:
+    input:
+        cpm_mean="results/bedgraph/cpm_mean/{group}_cpm_mean.bg"
+    output:
+        wig_cpm_mean="results/wig/cpm_mean/{group}_cpm_mean.wig"
+    envmodules:
+        config["python"]
+    log:
+        "results/logs/bedgraph/wig_convert_{group}.log"
+    shell:
+        """
+        python scripts/convert_bedgraph_to_wig.py {input.cpm_mean} {output.wig_cpm_mean} 2> {log}
+        """
+
+
+##################################################################
+##               Convert CPM BedGraph to WIG File               ##
+##################################################################
+
+rule bedgraph_to_wig_cpm:
+    input:
+        cpm="results/bedgraph/cpm/{sample}_cpm.bg"
+    output:
+        wig_cpm="results/wig/cpm/{sample}_cpm.wig"
+    envmodules:
+        config["python"]
+    log:
+        "results/logs/bedgraph/wig_convert_{sample}.log"
+    shell:
+        """
+        python scripts/convert_bedgraph_to_wig.py {input.cpm} {output.wig_cpm} 2> {log}
         """
