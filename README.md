@@ -136,7 +136,7 @@ A minimal test dataset can be placed in a `resources/` folder (not included curr
 ## 8) Instructions to run on Slurm managed HPC
 8A. Clone repository
 ```
-git clone https://github.com/JK-Cobre-Help/CutandTag_Analysis_Snakemake.git
+git clone https://github.com/RD-Cobre-Help/ChEC-Seq_Analysis.git
 ```
 8B. Load modules
 ```
