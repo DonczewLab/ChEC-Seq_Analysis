@@ -35,13 +35,12 @@
 
 ## 2) Intended Use Case
 
-This pipeline is **ideal** for researchers performing **ChEC-seq** who:
+This pipeline is **ideal** for performing **ChEC-seq**. It is a user-friendly workflow with customizable `samples.csv` and `config.yml` files, enabling reproducible and flexible analysis:
 
 - Start with raw FASTQ reads  
 - Use an external spike-in organism (e.g., *D. melanogaster*) for normalization   
-- Want to produce coverage files for genome browsers (BigWigs or WIGs)  
-- Prefer an automated, HPC-friendly solution  
-- Need to merge replicates by condition or replicate group
+- Produce coverage files for genome browsers (BigWigs, BedGraphs, or WIGs)  
+- Merges replicates by condition or replicate group
 
 By offering multiple coverage normalizations and easy HPC integration, this pipeline streamlines data preparation for subsequent analysis or visualization (e.g., IGV tracks, coverage heatmaps), including **mean coverage** tracks for replicate sets.
 
@@ -82,13 +81,13 @@ This Snakemake pipeline relies on:
 
 ## 5) Example Data
 
-A minimal test dataset can be placed in a `resources/` folder (not included currently). Update `samples.csv` to point to these FASTQs for a quick test run. Once confirmed, replace with your real CHEC-seq data.
+A minimal test dataset can be placed in a `resources/` folder (not included currently). Update `samples.csv` to point to these FASTQs for a quick test run. Once confirmed, replace with your real ChEC-seq data.
 
 ---
 
 ## 6) Explanation of `samples.csv`
 
-`samples.csv` defines which FASTQ files to process. Each row includes at least:
+`config/samples.csv` defines which FASTQ files to process, what the naming convention will be, and which samples to create average signal tracks. An example `samples.csv` is provided below:
 
 | sample             | fastq1                        | fastq2                       | merge_group |
 |--------------------|-------------------------------|------------------------------|-------------|
@@ -97,8 +96,8 @@ A minimal test dataset can be placed in a `resources/` folder (not included curr
 | **RDY226_IAA_A**   | /path/ExampleC_R1.fastq.gz    | /path/ExampleC_R2.fastq.gz   | IAA         |
 
 + **sample**: unique sample ID that will serve as file naming convention downstream  
-+ **fastq1** and **fastq2**: file paths to paired-end reads  
-+ **merge_group**: optional label for merging coverage across replicates (e.g., DMSO vs. IAA). Samples with the same `merge_group` will be averaged into a mean coverage bedGraph and BigWig/WIG.
++ **fastq1** and **fastq2**: file paths to paired-end fastq files  
++ **merge_group**: optional label for merging coverage across replicates (e.g., DMSO vs. IAA). Samples with the same `merge_group` will be averaged into a mean coverage BedGraph and BigWig/WIG.
 
 ---
 
@@ -115,18 +114,18 @@ A minimal test dataset can be placed in a `resources/` folder (not included curr
 3. **Spike-In Factors**  
   + `results/spikein_factors/spikein_factors.csv` listing scer/dmel read counts and a `spikein_factor` for each sample
 
-4. **Coverage Tracks** (BigWigs)  
+4. **BigWig Files**
   + `*_raw.bw` in `results/bigwig/raw/`  
   + `*_cpm.bw` in `results/bigwig/cpm/`  
   + `*_spikein.bw` in `results/bigwig/spikein/`  
 
-5. **CPM BedGraphs**
+5. **BedGraph Files**
   + `*_raw.bg` in `results/bedgraph/raw/`  
   + `*_cpm.bg` in `results/bedgraph/cpm/`  
   + `*_spikein.bg` in `results/bedgraph/spikein/`    
   + Merged bedGraphs in `results/bedgraph/cpm_mean/` (averaged by `merge_group`)  
 
-6. **Converted WIGs** (Optional)
+6. **WIG Files**
   + `*_raw.wig` in `results/wig/raw/`  
   + `*_cpm.wig` in `results/wig/cpm/`  
   + `*_spikein.wig` in `results/wig/spikein/`       
