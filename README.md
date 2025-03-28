@@ -19,10 +19,10 @@
   + FastQC runs on both raw and trimmed FASTQs
 
 - **Multiple Coverage Outputs**  
-  + **Raw** BigWig: unnormalized coverage  
-  + **CPM** BigWig & WIG: normalized to read depth  
-  + **Spike-In** BigWig: additional normalization via spike-in factor  
-  + **Average Coverage** BigWig, BedGraphs & WIG: average signal for single samples and merged sets
+  + **Raw** BigWig, BedGrapn, & Wig: unnormalized coverage  
+  + **CPM** BigWig, BedGraph, & Wig: normalized to read depth  
+  + **Spike-In** BigWig, BedGraph, & Wig: additional normalization via spike-in factor  
+  + **Average Coverage** BigWig, BedGraphs & Wig: average signal for single samples and merged sets
 
 - **Merge Coverage by Group**  
   + A `merge_group` column in `samples.csv` allows replicates to be combined into a mean coverage bedGraph and BigWig/WIG
@@ -120,12 +120,16 @@ A minimal test dataset can be placed in a `resources/` folder (not included curr
   + `*_cpm.bw` in `results/bigwig/cpm/`  
   + `*_SpikeIn.bw` in `results/bigwig/spikein/`  
 
-5. **CPM BedGraphs**  
-  + Single-sample bedGraphs in `results/bedgraph/cpm/`  
+5. **CPM BedGraphs**
+  + `*_raw.bg` in `results/bedgraph/raw/`  
+  + `*_cpm.bg` in `results/bedgraph/cpm/`  
+  + `*_spikein.bg` in `results/bedgraph/spikein/`    
   + Merged bedGraphs in `results/bedgraph/cpm_mean/` (averaged by `merge_group`)  
 
-6. **Converted WIGs** (Optional)  
-  + Single-sample WIG: `results/wig/cpm/{sample}_cpm.wig`  
+6. **Converted WIGs** (Optional)
+  + `*_raw.wig` in `results/wig/raw/`  
+  + `*_cpm.wig` in `results/wig/cpm/`  
+  + `*_spikein.wig` in `results/wig/spikein/`       
   + Merged WIG: `results/wig/cpm_mean/{group}_cpm_mean.wig`
 
 ---
