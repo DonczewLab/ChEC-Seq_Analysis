@@ -101,10 +101,10 @@ rule all:
         "results/spikein_factors/spikein_factors.csv",
 
         # 8) Spike-in normalized BigWigs
-        expand("results/bigwig/spikein/{sample}_SpikeIn.bw", sample=SAMPLES),
+        expand("results/bigwig/spikein/{sample}_spikein.bw", sample=SAMPLES),
 
         # 9) Spike-in normalized BedGraph
-        expand("results/bedgraph/spikein/{sample}_SpikeIn.bg", sample=SAMPLES),
+        expand("results/bedgraph/spikein/{sample}_spikein.bg", sample=SAMPLES),
 
         # 10) CPM BigWigs
         expand("results/bigwig/cpm/{sample}_cpm.bw", sample=SAMPLES),
@@ -340,7 +340,7 @@ rule make_bigwig_scer_spikein:
         bam="results/alignment/scer/{sample}.bam",
         csv="results/spikein_factors/spikein_factors.csv"
     output:
-        "results/bigwig/spikein/{sample}_SpikeIn.bw"
+        "results/bigwig/spikein/{sample}_spikein.bw"
     params:
         binSize=config["binSize"],
         blacklist=config["blacklist_scer"]
@@ -391,7 +391,7 @@ rule make_bedgraph_scer_spikein:
         bam="results/alignment/scer/{sample}.bam",
         csv="results/spikein_factors/spikein_factors.csv"
     output:
-        "results/bedgraph/spikein/{sample}_SpikeIn.bg"
+        "results/bedgraph/spikein/{sample}_spikein.bg"
     params:
         binSize=config["binSize"],
         blacklist=config["blacklist_scer"]
