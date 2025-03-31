@@ -48,8 +48,8 @@ for sample, bams in sample_dict.items():
     spikein_cmd = ["samtools", "view", "-c", "-F", "4", spikein_bam]
     spikein_count = int(subprocess.check_output(spikein_cmd).decode().strip())
 
-    # e.g. factor = spikein_count / scer_count
-    factor = 1.0 if scer_count == 0 else (spikein_count / float(scer_count))
+    total = scer_count + spikein_count
+    factor = 1.0 if total == 0 else 100 * (spikein_count / float(total))
 
     results.append((sample, scer_count, spikein_count, factor))
 
