@@ -103,15 +103,26 @@ p3 <- ggplot(spikein_data, aes(x = merge_group, y = spikein_reads / 1e6, fill = 
   ggtitle("Spike-In Reads per Sample") +
   guides(fill = "none")
 
-# Plot 4: Spike-in Factor
-p4 <- ggplot(spikein_data, aes(x = merge_group, y = spikein_factor, fill = merge_group)) +
-  geom_boxplot(alpha = 0.7) +
-  geom_jitter(width = 0.2, size = 2) +
+# Order samples within each merge group
+spikein_data <- spikein_data %>%
+  arrange(merge_group, sample)
+
+# Create factor for 'sample' with levels in the desired order
+spikein_data$sample <- factor(spikein_data$sample, levels = unique(spikein_data$sample))
+
+# show dataframe 
+print(spikein_data)
+
+# Plot 4: Spike-in Factor Bar plot
+p4 <- ggplot(spikein_data, aes(x = sample, y = spikein_factor, fill = merge_group)) +
+  geom_bar(stat = "identity") +
   theme_bw(base_size = 14) +
   ylab("Spike-In Factor") +
-  xlab("Group") +
+  xlab("Sample") +
   ggtitle("Spike-In Factor per Sample") +
-  guides(fill = "none")
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_fill_brewer(palette = "Set2")  # use same palette as boxplots
+
 
 
 # Combine
