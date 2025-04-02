@@ -82,6 +82,8 @@ spikein_data <- spikein_data %>%
 # Debug check
 cat("\n==== DEBUG: spikein_data (after clean join) ====\n")
 print(spikein_data)
+cat("\n==== DEBUG: samples_df before join ====\n")
+print(samples_df[, c("sample", "merge_group")])
 
 # Plot 1: Total reads per sample (boxplot) — paired-end reads
 p1 <- ggplot(alignStats, aes(x = merge_group, y = total_reads / 1e6, fill = merge_group)) +
