@@ -1,13 +1,12 @@
 #!/usr/bin/env Rscript
 
-# Load required libraries
 library(ggplot2)
 library(dplyr)
 library(tidyr)
 library(ggpubr)
 library(tools)
 
-# Arguments: log_dir, spikein_factors_csv, output_file
+# Arguments
 args <- commandArgs(trailingOnly = TRUE)
 if (length(args) < 3) {
   stop("Usage: Rscript plot_alignment_stats.R <log_directory> <spikein_csv> <output_file>")
@@ -18,18 +17,16 @@ spikein_csv <- args[2]
 output_file <- args[3]
 samples_csv <- "config/samples.csv"
 
-# Read merge group info
+# Read samples.csv
 samples_df <- read.csv(samples_csv, stringsAsFactors = FALSE)
-samples_df$sample <- tools::file_path_sans_ext(basename(samples_df$sample))  # Normalize sample names
+samples_df$sample <- file_path_sans_ext(basename(samples_df$sample))  # Normalize
 
-# List all log files
+# List log files
 log_files <- list.files(path = log_dir, pattern = "\\.log$", full.names = TRUE)
 if (length(log_files) == 0) stop("No log files found in directory: ", log_dir)
 
-# Initialize dataframe
 alignStats <- data.frame()
 
-# Extract number from text via regex
 extract_num <- function(text, pattern) {
   m <- regmatches(text, regexec(pattern, text))
   if (length(m[[1]]) > 1) return(as.numeric(m[[1]][2])) else return(NA)
@@ -38,14 +35,9 @@ extract_num <- function(text, pattern) {
 # Parse logs
 for (f in log_files) {
   sample <- file_path_sans_ext(basename(f))
-  sample <- gsub("_filtered$", "", sample)  # Remove suffix if present
-  cat("Parsed sample name:", sample, "\n")
-
+  sample <- gsub("_filtered$", "", sample)
   lines <- readLines(f, warn = FALSE)
-  if (length(lines) == 0) {
-    cat("Warning: Log file is empty:", f, "\n")
-    next
-  }
+  if (length(lines) == 0) next
 
   total_reads <- extract_num(lines[1], "^([0-9]+)\\s+reads;")
   unmapped <- unique_mapped <- multimapped <- overall_rate <- NA
@@ -71,29 +63,17 @@ for (f in log_files) {
   ))
 }
 
-# Sanity check
-if (nrow(alignStats) == 0) stop("No alignment stats parsed. Check if log files have content.")
-if (!"sample" %in% colnames(samples_df)) stop("samples.csv must contain 'sample' column.")
-
-# Merge with samples.csv for merge_group
+# Merge group
 alignStats <- alignStats %>%
   left_join(samples_df[, c("sample", "merge_group")], by = "sample")
 
-if (all(is.na(alignStats$merge_group))) {
-  cat("Warning: All merge_group values are NA. Check sample name matching.\n")
-  print("alignStats sample names:")
-  print(alignStats$sample)
-  print("samples_df sample names:")
-  print(samples_df$sample)
-}
-
-# Read spike-in CSV and merge with group info
+# Spike-in info
 spikein_data <- read.csv(spikein_csv, stringsAsFactors = FALSE)
-spikein_data$sample <- tools::file_path_sans_ext(basename(spikein_data$sample))  # Normalize if needed
+spikein_data$sample <- file_path_sans_ext(basename(spikein_data$sample))
 spikein_data <- spikein_data %>%
   left_join(samples_df[, c("sample", "merge_group")], by = "sample")
 
-# Plot 1: Total reads per sample (boxplot)
+# Plot 1: Total Reads
 p1 <- ggplot(alignStats, aes(x = merge_group, y = total_reads / 1e6, fill = merge_group)) +
   geom_boxplot(alpha = 0.7) +
   geom_jitter(width = 0.2, size = 2) +
@@ -103,7 +83,7 @@ p1 <- ggplot(alignStats, aes(x = merge_group, y = total_reads / 1e6, fill = merg
   ggtitle("Total Reads per Sample") +
   guides(fill = "none")
 
-# Plot 2: Overall alignment rate per sample (boxplot)
+# Plot 2: Overall Alignment Rate
 p2 <- ggplot(alignStats, aes(x = merge_group, y = overall_rate, fill = merge_group)) +
   geom_boxplot(alpha = 0.7) +
   geom_jitter(width = 0.2, size = 2) +
@@ -113,17 +93,17 @@ p2 <- ggplot(alignStats, aes(x = merge_group, y = overall_rate, fill = merge_gro
   ggtitle("Overall Alignment Rate per Sample") +
   guides(fill = "none")
 
-# Plot 3: Total spike-in reads (boxplot)
-p3 <- ggplot(spikein_data, aes(x = merge_group, y = spikein_total_reads / 1e6, fill = merge_group)) +
+# Plot 3: Spike-in Total Reads
+p3 <- ggplot(spikein_data, aes(x = merge_group, y = spikein_reads / 1e6, fill = merge_group)) +
   geom_boxplot(alpha = 0.7) +
   geom_jitter(width = 0.2, size = 2) +
   theme_bw(base_size = 14) +
-  ylab("Spike-In Total Reads (Millions)") +
+  ylab("Spike-In Reads (Millions)") +
   xlab("Group") +
-  ggtitle("Spike-In Total Reads per Sample") +
+  ggtitle("Spike-In Reads per Sample") +
   guides(fill = "none")
 
-# Plot 4: Spike-in factor (boxplot)
+# Plot 4: Spike-in Factor
 p4 <- ggplot(spikein_data, aes(x = merge_group, y = spikein_factor, fill = merge_group)) +
   geom_boxplot(alpha = 0.7) +
   geom_jitter(width = 0.2, size = 2) +
@@ -133,8 +113,8 @@ p4 <- ggplot(spikein_data, aes(x = merge_group, y = spikein_factor, fill = merge
   ggtitle("Spike-In Factor per Sample") +
   guides(fill = "none")
 
-# Arrange
+# Combine
 final_plot <- ggarrange(p1, p2, p3, p4, ncol = 2, nrow = 2)
 
-# Save output
+# Save
 ggsave(output_file, final_plot, width = 16, height = 12)
