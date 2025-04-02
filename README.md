@@ -31,6 +31,11 @@
   + Each step defined as a Snakemake rule with explicit inputs/outputs  
   + Snakemake manages HPC job submissions, ensuring fast parallel processing of samples and the ability to only rerun needed steps
 
+- **Automated Plot Generation**  
+  + Summary plots include:
+    - **Alignment statistics** (paired reads, alignment rate, spike-in reads, spike-in factor)
+    - **Fragment length distributions** per sample using violin and line plots
+
 ---
 
 ## 2) Intended Use Case
