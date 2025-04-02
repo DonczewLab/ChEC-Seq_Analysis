@@ -67,14 +67,15 @@ for (f in log_files) {
 alignStats <- alignStats %>%
   left_join(samples_df[, c("sample", "merge_group")], by = "sample")
 
-# Read spike-in CSV and merge with group info if necessary
+# Read spike-in CSV and ensure merge_group is accurately joined from samples_df
 spikein_data <- read.csv(spikein_csv, stringsAsFactors = FALSE)
-if (!"merge_group" %in% colnames(spikein_data)) {
-  spikein_data <- spikein_data %>%
-    left_join(samples_df[, c("sample", "merge_group")], by = "sample")
-}
 
-# Reorder factor levels to match sample order
+# Always re-merge with trusted samples.csv to guarantee correct merge_group
+spikein_data <- spikein_data %>%
+  dplyr::select(sample, scer_reads, spikein_reads, spikein_factor) %>%
+  left_join(samples_df[, c("sample", "merge_group")], by = "sample")
+
+# Reorder based on alignStats to maintain correct plotting order
 spikein_data$sample <- factor(spikein_data$sample, levels = alignStats$sample)
 spikein_data$merge_group <- factor(spikein_data$merge_group, levels = unique(alignStats$merge_group))
 
