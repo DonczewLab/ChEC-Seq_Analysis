@@ -131,16 +131,16 @@ A minimal test dataset can be placed in a `resources/` folder (not included curr
   + `*_spikein.wig` in `results/wig/spikein/`       
   + Merged Wig: `results/wig/cpm_mean/{group}_cpm_mean.wig`
 
-7. **Plots**
+7. **Alignment Statistics Plot**
   + `alignment_stats.png` in `results/plots/`
-  + **Alignment Statistics Plot**
-  - Total **paired-end reads** per sample (boxplot)
-  - **Overall alignment rate** per sample (boxplot)
-  - **Total spike-in reads** per sample (boxplot)
-  - **Spike-in factor** per sample (barplot, grouped by replicate)
+    + Total **paired-end reads** per sample (boxplot)
+    + **Overall alignment rate** per sample (boxplot)
+    + **Total spike-in reads** per sample (boxplot)
+    + **Spike-in factor** per sample (barplot, grouped by replicate)
 
-  + **Fragment Length Distribution Plot**: `results/plots/fragment_length_plot.png`  
-  A two-panel violin and line plot showing the distribution of **insert fragment lengths** for each sample, calculated from properly paired alignments.
+  + **Fragment Length Distribution Plot**:
+  + `fragment_length_plot.png` in `results/plots/`  
+    + A two-panel violin and line plot showing the distribution of **insert fragment lengths** for each sample, calculated from properly paired alignments.
 
 ---
 
