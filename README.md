@@ -117,19 +117,21 @@ A minimal test dataset can be placed in a `resources/` folder (not included curr
 4. **BigWig Files**
   + `*_raw.bw` in `results/bigwig/raw/`  
   + `*_cpm.bw` in `results/bigwig/cpm/`  
-  + `*_spikein.bw` in `results/bigwig/spikein/`  
+  + `*_spikein.bw` in `results/bigwig/spikein/`
+    + Merged BigWig: `*_cpm_mean.bw` in `results/bigwig/cpm_mean/`
+
 
 5. **BedGraph Files**
   + `*_raw.bg` in `results/bedgraph/raw/`  
   + `*_cpm.bg` in `results/bedgraph/cpm/`  
   + `*_spikein.bg` in `results/bedgraph/spikein/`    
-  + Merged bedGraphs in `results/bedgraph/cpm_mean/` (averaged by `merge_group`)  
+    + Merged BedGraph: `*_cpm_mean.bg` in `results/bedgraph/cpm_mean/`
 
 6. **WIG Files**
   + `*_raw.wig` in `results/wig/raw/`  
   + `*_cpm.wig` in `results/wig/cpm/`  
   + `*_spikein.wig` in `results/wig/spikein/`       
-  + Merged Wig: `results/wig/cpm_mean/{group}_cpm_mean.wig`
+    + Merged Wig: `*_cpm_mean.wig` in `results/wig/cpm_mean/`
 
 7. **Alignment Statistics Plot**
   + `alignment_stats.png` in `results/plots/`
