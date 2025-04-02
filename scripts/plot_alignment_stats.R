@@ -78,14 +78,18 @@ if (!"merge_group" %in% colnames(spikein_data)) {
 spikein_data$sample <- factor(spikein_data$sample, levels = alignStats$sample)
 spikein_data$merge_group <- factor(spikein_data$merge_group, levels = unique(alignStats$merge_group))
 
-# Plot 1: Total reads per sample (boxplot)
+# DEBUG: Print final spikein_data to stdout (goes to .log file)
+print("==== DEBUG: spikein_data ====")
+print(spikein_data)
+
+# Plot 1: Total reads per sample (boxplot) — paired-end reads
 p1 <- ggplot(alignStats, aes(x = merge_group, y = total_reads / 1e6, fill = merge_group)) +
   geom_boxplot(alpha = 0.7) +
   geom_jitter(width = 0.2, size = 2) +
   theme_bw(base_size = 14) +
   ylab("Total Reads (Millions)") +
   xlab("Group") +
-  ggtitle("Total Reads per Sample") +
+  ggtitle("Total Reads per Sample (Paired-End)") +
   guides(fill = "none")
 
 # Plot 2: Overall alignment rate per sample (boxplot)
