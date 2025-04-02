@@ -104,14 +104,15 @@ p3 <- ggplot(spikein_data, aes(x = merge_group, y = spikein_reads / 1e6, fill = 
   guides(fill = "none")
 
 # Plot 4: Spike-in Factor
-p4 <- ggplot(spikein_data, aes(x = merge_group, y = spikein_factor, fill = merge_group)) +
-  geom_boxplot(alpha = 0.7) +
-  geom_jitter(width = 0.2, size = 2) +
+p4 <- ggplot(spikein_data, aes(x = sample, y = spikein_factor, fill = merge_group)) +
+  geom_bar(stat = "identity") +
   theme_bw(base_size = 14) +
   ylab("Spike-In Factor") +
-  xlab("Group") +
+  xlab("Sample") +
   ggtitle("Spike-In Factor per Sample") +
-  guides(fill = "none")
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_fill_brewer(palette = "Set2")
+
 
 # Combine
 final_plot <- ggarrange(p1, p2, p3, p4, ncol = 2, nrow = 2)
