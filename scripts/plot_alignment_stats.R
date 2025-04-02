@@ -20,6 +20,7 @@ samples_csv <- "config/samples.csv"
 
 # Read merge group info
 samples_df <- read.csv(samples_csv, stringsAsFactors = FALSE)
+samples_df$sample <- tools::file_path_sans_ext(basename(samples_df$sample))  # Normalize sample names
 
 # List all log files
 log_files <- list.files(path = log_dir, pattern = "\\.log$", full.names = TRUE)
@@ -37,7 +38,14 @@ extract_num <- function(text, pattern) {
 # Parse logs
 for (f in log_files) {
   sample <- file_path_sans_ext(basename(f))
+  sample <- gsub("_filtered$", "", sample)  # Remove suffix if present
+  cat("Parsed sample name:", sample, "\n")
+
   lines <- readLines(f, warn = FALSE)
+  if (length(lines) == 0) {
+    cat("Warning: Log file is empty:", f, "\n")
+    next
+  }
 
   total_reads <- extract_num(lines[1], "^([0-9]+)\\s+reads;")
   unmapped <- unique_mapped <- multimapped <- overall_rate <- NA
@@ -63,12 +71,25 @@ for (f in log_files) {
   ))
 }
 
+# Sanity check
+if (nrow(alignStats) == 0) stop("No alignment stats parsed. Check if log files have content.")
+if (!"sample" %in% colnames(samples_df)) stop("samples.csv must contain 'sample' column.")
+
 # Merge with samples.csv for merge_group
 alignStats <- alignStats %>%
   left_join(samples_df[, c("sample", "merge_group")], by = "sample")
 
+if (all(is.na(alignStats$merge_group))) {
+  cat("Warning: All merge_group values are NA. Check sample name matching.\n")
+  print("alignStats sample names:")
+  print(alignStats$sample)
+  print("samples_df sample names:")
+  print(samples_df$sample)
+}
+
 # Read spike-in CSV and merge with group info
 spikein_data <- read.csv(spikein_csv, stringsAsFactors = FALSE)
+spikein_data$sample <- tools::file_path_sans_ext(basename(spikein_data$sample))  # Normalize if needed
 spikein_data <- spikein_data %>%
   left_join(samples_df[, c("sample", "merge_group")], by = "sample")
 
