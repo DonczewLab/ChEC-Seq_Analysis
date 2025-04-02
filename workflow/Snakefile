@@ -598,7 +598,7 @@ rule bedgraph_to_wig_cpm:
 
 
 ##################################################################
-##          Plot Alignment Stats (Stacked Bar & Box Plots)      ##
+##            Plot Alignment Stats (Box and Bar Plots)          ##
 ##################################################################
 rule plot_alignment_stats:
     input:
