@@ -87,7 +87,7 @@ This Snakemake pipeline relies on:
 
 ## 5) Example Data
 
-A minimal test dataset can be placed in a `resources/` folder (not included currently). Update `samples.csv` to point to these FASTQs for a quick test run. Once confirmed, replace with your real ChEC-seq data.
+A minimal test dataset can be placed in a `resources/` folder (not included currently). Update `samples.csv` to point to these FASTQs for a quick test run. Once confirmed, replace with your personal ChEC-seq data.
 
 ---
 
