@@ -80,6 +80,7 @@ This Snakemake pipeline relies on:
 - **DeepTools** (bamCoverage) for coverage generation  
 - **Bedtools** for Average Signal files
 - **Python** for spike-in factor calculations and WIG conversions
+- **UCSC** (bedGraphToBigWig) to generate average signal BigWigs from BedGraphs
 - **R** to generate alignment metric plots
 
 ---
