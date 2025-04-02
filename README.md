@@ -114,8 +114,8 @@ A minimal test dataset can be placed in a `resources/` folder (not included curr
   + Trimmed FASTQs in `results/trimmed/`
 
 2. **Aligned Files**  
-  + Primary BAM in `results/alignment/scer`  
-  + Spike-in BAM in `results/alignment/spikein`
+  + Primary BAMs in `results/alignment/scer`  
+  + Spike-in BAMs in `results/alignment/spikein`
 
 3. **Spike-In Factors**  
   + `spikein_factors.csv` in `results/spikein_factors/`
