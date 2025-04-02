@@ -140,8 +140,8 @@ A minimal test dataset can be placed in a `resources/` folder (not included curr
     + **Total spike-in reads** per sample (boxplot)
     + **Spike-in factor** per sample (barplot, grouped by replicate)
 
- 7B. **Fragment Length Distribution Plot**:
-  + `fragment_length_plot.png` in `results/plots/`  
+7B. **Fragment Length Distribution Plot**:
+  + `fragment_length_plot.png` in `results/plots/`
     + A two-panel violin and line plot showing the distribution of **insert fragment lengths** for each sample, calculated from properly paired alignments.
 
 ---
