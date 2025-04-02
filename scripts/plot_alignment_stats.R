@@ -103,13 +103,13 @@ p3 <- ggplot(spikein_data, aes(x = merge_group, y = spikein_reads / 1e6, fill = 
   ggtitle("Spike-In Reads per Sample") +
   guides(fill = "none")
 
-# Plot 4: Spike-in Factor
 # Make sample a factor and order it by merge_group for consistent color grouping
 spikein_data$sample <- factor(spikein_data$sample, 
                               levels = spikein_data %>%
                                 arrange(merge_group, sample) %>%
                                 pull(sample))
 
+# Plot 4: Spike-in Factor
 p4 <- ggplot(spikein_data, aes(x = sample, y = spikein_factor, fill = merge_group)) +
   geom_bar(stat = "identity") +
   theme_bw(base_size = 14) +
@@ -118,7 +118,6 @@ p4 <- ggplot(spikein_data, aes(x = sample, y = spikein_factor, fill = merge_grou
   ggtitle("Spike-In Factor per Sample") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   scale_fill_brewer(palette = "Set2")  # Optional: match boxplot palette
-
 
 
 # Combine
