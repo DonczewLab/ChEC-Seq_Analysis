@@ -81,6 +81,7 @@ This Snakemake pipeline relies on:
 - **Bedtools** for Average Signal files
 - **Python** for spike-in factor calculations and WIG conversions
 - **UCSC** (bedGraphToBigWig) to generate BigWigs from bedGraphs
+- **R** to generate alignment metric plots
 
 ---
 
