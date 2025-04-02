@@ -67,20 +67,20 @@ for (f in log_files) {
 alignStats <- alignStats %>%
   left_join(samples_df[, c("sample", "merge_group")], by = "sample")
 
-# Read spike-in CSV and ensure merge_group is accurately joined from samples_df
+# Read spike-in CSV
 spikein_data <- read.csv(spikein_csv, stringsAsFactors = FALSE)
 
-# Always re-merge with trusted samples.csv to guarantee correct merge_group
+# Ensure 'sample' has no extra whitespace
+spikein_data$sample <- trimws(spikein_data$sample)
+samples_df$sample <- trimws(samples_df$sample)
+
+# Join merge_group from samples.csv (trusted)
 spikein_data <- spikein_data %>%
   dplyr::select(sample, scer_reads, spikein_reads, spikein_factor) %>%
   left_join(samples_df[, c("sample", "merge_group")], by = "sample")
 
-# Reorder based on alignStats to maintain correct plotting order
-spikein_data$sample <- factor(spikein_data$sample, levels = alignStats$sample)
-spikein_data$merge_group <- factor(spikein_data$merge_group, levels = unique(alignStats$merge_group))
-
-# DEBUG: Print final spikein_data to stdout (goes to .log file)
-print("==== DEBUG: spikein_data ====")
+# Debug check
+cat("\n==== DEBUG: spikein_data (after clean join) ====\n")
 print(spikein_data)
 
 # Plot 1: Total reads per sample (boxplot) — paired-end reads
