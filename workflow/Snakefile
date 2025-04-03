@@ -198,7 +198,7 @@ rule trim_adapters:
 
 
 ##################################################################
-##               Align to S. cerevisiae (primary)               ##
+##            Align to Primary Genome (S. cerevisiae)           ##
 ##################################################################
 
 rule align_scer:
@@ -229,7 +229,7 @@ rule align_scer:
 
 
 ##################################################################
-##             Align to D. melanogaster (spike-in)              ##
+##             Align to Spike-In Genome (S. pombe)              ##
 ##################################################################
 
 rule align_spikein:
