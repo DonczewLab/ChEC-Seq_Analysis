@@ -110,8 +110,8 @@ rule all:
         expand("results/bedgraph/spikein/{sample}_spikein.bg", sample=SAMPLES),
 
         # 10) Calculate scale in factor for CPM files
-        expand("results/scale_reads/{sample}_total_reads_cpm.txt, sample=SAMPLES"),
-        expand("results/scale_reads/{sample}_scale_factor_include.txt, sample=SAMPLES"),
+        expand("results/scale_reads/{sample}_total_reads_cpm.txt", sample=SAMPLES),
+        expand("results/scale_reads/{sample}_scale_factor_include.txt", sample=SAMPLES),
 
         # 11) CPM BigWigs
         expand("results/bigwig/cpm/{sample}_cpm.bw", sample=SAMPLES),
@@ -448,7 +448,7 @@ EOF
 
 
 ##################################################################
-##         Total Reads and Scale Factor (Include Filter)        ##
+##                 Scale Factor (Include Filter)                ##
 ##################################################################
 
 rule calculate_total_reads_cpm:
@@ -477,28 +477,28 @@ rule calculate_total_reads_cpm:
 ##################################################################
 
 rule make_bigwig_scer_cpm:
-    """
-    Generate CPM-normalized bigWig from scer BAM.
-    """
     input:
-        "results/alignment/scer/{sample}.bam"
+        bam = "results/alignment/scer/{sample}.bam",
+        scale_factor = "results/scale_reads/{sample}_scale_factor_include.txt"
     output:
-        "results/bigwig/cpm/{sample}_cpm.bw"
+        bigwig_scaled = "results/bigwig/cpm/{sample}_cpm.bw"
     params:
-        binSize=config["binSize"],
-        blacklist=config["blacklist_scer"]
+        binSize = config["binSize"],
+        blacklist = config["blacklist_scer"]
     envmodules:
         config["deeptools"]
     log:
-        "results/logs/bigwig/scer_cpm/{sample}.log"
+        "results/logs/bigwig/scer_cpm_scaled/{sample}.log"
     shell:
         """
-        bamCoverage --bam {input} \
-            --outFileName {output} \
+        scale_factor=$(cat {input.scale_factor})
+        bamCoverage \
+            -b {input.bam} \
+            -o {output.bigwig_scaled} \
             --binSize {params.binSize} \
+            --scaleFactor $scale_factor \
             --numberOfProcessors 4 \
-            --normalizeUsing CPM \
-            --blackListFileName {params.blacklist}
+            --blackListFileName {params.blacklist} 2> {log}
         """
 
 
@@ -508,27 +508,28 @@ rule make_bigwig_scer_cpm:
 
 rule make_bedgraph_scer_cpm:
     input:
-        "results/alignment/scer/{sample}.bam"
+        bam = "results/alignment/scer/{sample}.bam",
+        scale_factor = "results/scale_reads/{sample}_scale_factor_include.txt"
     output:
         "results/bedgraph/cpm/{sample}_cpm.bg"
     params:
-        binSize=config["binSize"],
-        blacklist=config["blacklist_scer"]
+        binSize = config["binSize"],
+        blacklist = config["blacklist_scer"]
     envmodules:
         config["deeptools"]
     log:
-        "results/logs/bedgraph/{sample}_cpm.log"
+        "results/logs/bedgraph/scer_cpm_scaled/{sample}.log"
     shell:
         """
+        scale_factor=$(cat {input.scale_factor})
         bamCoverage \
-          --bam {input} \
-          --outFileName {output} \
-          --outFileFormat bedgraph \
-          --binSize {params.binSize} \
-          --numberOfProcessors 4 \
-          --normalizeUsing CPM \
-          --blackListFileName {params.blacklist} \
-          2> {log}
+            -b {input.bam} \
+            -o {output} \
+            --outFileFormat bedgraph \
+            --binSize {params.binSize} \
+            --scaleFactor $scale_factor \
+            --numberOfProcessors 4 \
+            --blackListFileName {params.blacklist} 2> {log}
         """
 
 
