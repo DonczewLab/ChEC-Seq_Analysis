@@ -109,31 +109,35 @@ rule all:
         # 9) Spike-in normalized BedGraph
         expand("results/bedgraph/spikein/{sample}_spikein.bg", sample=SAMPLES),
 
-        # 10) CPM BigWigs
+        # 10) Calculate scale in factor for CPM files
+        expand("results/scale_reads/{sample}_total_reads_cpm.txt, sample=SAMPLES"),
+        expand("results/scale_reads/{sample}_scale_factor_include.txt, sample=SAMPLES"),
+
+        # 11) CPM BigWigs
         expand("results/bigwig/cpm/{sample}_cpm.bw", sample=SAMPLES),
 
-        # 11) CPM BegGraphs
+        # 12) CPM BegGraphs
         expand("results/bedgraph/cpm/{sample}_cpm.bg", sample=SAMPLES),
 
-        # 12) Mean coverage BedGraphs
+        # 13) Mean coverage BedGraphs
         expand("results/bedgraph/cpm_mean/{group}_cpm_mean.bg", group=merge_groups),
 
-        # 13) Mean coverage BigWigs
+        # 14) Mean coverage BigWigs
         expand("results/bigwig/cpm_mean/{group}_cpm_mean.bw", group=merge_groups),
 
-        # 14) Make all Wigs
+        # 15) Make all Wigs
         expand("results/wig/raw/{sample}_raw.wig", sample=SAMPLES),
         expand("results/wig/spikein/{sample}_spikein.wig", sample=SAMPLES),
         expand("results/wig/cpm/{sample}_cpm.wig", sample=SAMPLES),
         expand("results/wig/cpm_mean/{group}_cpm_mean.wig", group=merge_groups),
 
-        # 15) Alignment Stats Plot (stacked bar and box plots)
+        # 16) Alignment Stats Plot (stacked bar and box plots)
         "results/plots/alignment_stats.png",
 
-        # 16) Fragment Length Files
+        # 17) Fragment Length Files
         expand("results/alignment/scer/{sample}_fragmentLen.txt", sample=SAMPLES),
 
-        # 17) Fragment Length Distribution Plot (violin & line plots)
+        # 18) Fragment Length Distribution Plot (violin & line plots)
         "results/plots/fragment_length_plot.png"
 
 
@@ -440,6 +444,31 @@ EOF
                     --numberOfProcessors 4 \
                     --scaleFactor $factor \
                     --blackListFileName {params.blacklist}
+        """
+
+
+##################################################################
+##         Total Reads and Scale Factor (Include Filter)        ##
+##################################################################
+
+rule calculate_total_reads_cpm:
+    input:
+        sorted_bam = "results/alignment/scer/{sample}.bam"
+    output:
+        total_reads = "results/scale_reads/{sample}_total_reads_cpm.txt",
+        scale_factor = "results/scale_reads/{sample}_scale_factor_include.txt"
+    params:
+        includelist = "config/SGD_R64-3-1_includelist.bed"
+    envmodules:
+        config["samtools"]
+    log:
+        "results/logs/snakelogs/calculate_total_reads_include.{sample}.log"
+    shell:
+        """
+        total_reads=$(samtools view -c -F 4 -L {params.includelist} {input.sorted_bam})
+        scale_factor=$(echo "1 / ($total_reads / 1000000)" | bc -l)
+        echo $total_reads > {output.total_reads}
+        echo $scale_factor > {output.scale_factor}
         """
 
 
