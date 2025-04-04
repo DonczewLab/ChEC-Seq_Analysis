@@ -458,7 +458,7 @@ rule calculate_total_reads_cpm:
         total_reads = "results/scale_reads/{sample}_total_reads_cpm.txt",
         scale_factor = "results/scale_reads/{sample}_scale_factor_include.txt"
     params:
-        includelist = "config/SGD_R64-3-1_includelist.bed"
+        includelist = config["include_list"]
     envmodules:
         config["samtools"]
     log:
