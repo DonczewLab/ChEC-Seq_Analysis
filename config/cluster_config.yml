@@ -100,6 +100,15 @@ bedgraph_to_bigwig_mean_cpm:
   output: logs/{rule}.{wildcards.group}.out
   error: logs/{rule}.{wildcards.group}.err
 
+bedgraph_to_bigwig_mean_spikein:
+  cpus-per-task: 4
+  mem: "16G"
+  cores: 4
+  time: "01:00:00"
+  name: "{rule}.{wildcards.group}"
+  output: logs/{rule}.{wildcards.group}.out
+  error: logs/{rule}.{wildcards.group}.err
+  
 # ------------------------------------------------------------------------------
 # BedGraph creation
 # ------------------------------------------------------------------------------
@@ -142,6 +151,15 @@ merge_bedgraphs_mean_cpm:
   output: logs/{rule}.{wildcards.group}.out
   error: logs/{rule}.{wildcards.group}.err
 
+merge_bedgraphs_mean_spikein:
+  cpus-per-task: 4
+  mem: "16G"
+  cores: 4
+  time: "02:00:00"
+  name: "{rule}.{wildcards.group}"
+  output: logs/{rule}.{wildcards.group}.out
+  error: logs/{rule}.{wildcards.group}.err
+  
 # ------------------------------------------------------------------------------
 # Calculating spike-in
 # ------------------------------------------------------------------------------
@@ -174,6 +192,15 @@ bedgraph_to_wig_cpm:
   name: "{rule}.{wildcards.sample}"
   output: logs/{rule}.{wildcards.sample}.out
   error: logs/{rule}.{wildcards.sample}.err
+
+bedgraph_to_wig_mean_spikein:
+  cpus-per-task: 2
+  mem: "8G"
+  cores: 2
+  time: "01:00:00"
+  name: "{rule}.{wildcards.group}"
+  output: logs/{rule}.{wildcards.group}.out
+  error: logs/{rule}.{wildcards.group}.err
 
 # ------------------------------------------------------------------------------
 # Plot Generation
