@@ -71,6 +71,17 @@ make_bigwig_scer_spikein:
   output: logs/{rule}.{wildcards.sample}.out
   error: logs/{rule}.{wildcards.sample}.err
 
+# ------------------------------------------------------------------------------
+# Calculate CPM by hand
+# ------------------------------------------------------------------------------
+calculate_total_reads_cpm:
+  cpus-per-task: 2
+  mem: "8G"
+  time: "00:30:00"
+  name: "{rule}.{wildcards.sample}"
+  output: logs/{rule}.{wildcards.sample}.out
+  error: logs/{rule}.{wildcards.sample}.err
+
 make_bigwig_scer_cpm:
   cpus-per-task: 4
   mem: "16G"

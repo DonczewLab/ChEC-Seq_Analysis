@@ -7,8 +7,9 @@ samples_csv: "config/samples.csv"
 
 # Primary (no spike-in) genome = S. cerevisiae
 scer_genome: "/s/cobre-dev-bio/boydk/Rafal_Lab/saccharomyces_cerevisiae_scer_genome/SGD_R64-3-1_genome_bowtie2_index/SGD_R64-3-1_genome"
-blacklist_scer: "/s/cobre-dev-bio/boydk/Rafal_Lab/saccharomyces_cerevisiae_scer_genome/SGD_R64-3-1_blacklist.bed"
 genome_file_scer: "/s/cobre-dev-bio/boydk/Rafal_Lab/saccharomyces_cerevisiae_scer_genome/SGD_R64-3-1_genomefile.txt"
+blacklist_scer: "/s/cobre-dev-bio/boydk/Rafal_Lab/saccharomyces_cerevisiae_scer_genome/SGD_R64-3-1_blacklist.bed"
+include_list: "/s/cobre-dev-bio/boydk/Rafal_Lab/include_list/SGD_R64-3-1_includelist.bed"
 
 # Default spike-in genome = D. melanogaster
 spikein_genome: "/s/cobre-dev-bio/boydk/Rafal_Lab/drosophila_melanogaster_dmel_genome/NCBI_R6plusISO1MT_genome_bowtie2_index/NCBI_R6plusISO1MT_genome"
