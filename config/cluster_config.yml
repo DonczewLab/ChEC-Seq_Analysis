@@ -71,17 +71,6 @@ make_bigwig_scer_spikein:
   output: logs/{rule}.{wildcards.sample}.out
   error: logs/{rule}.{wildcards.sample}.err
 
-# ------------------------------------------------------------------------------
-# Calculate CPM by hand
-# ------------------------------------------------------------------------------
-calculate_total_reads_cpm:
-  cpus-per-task: 2
-  mem: "8G"
-  time: "00:30:00"
-  name: "{rule}.{wildcards.sample}"
-  output: logs/{rule}.{wildcards.sample}.out
-  error: logs/{rule}.{wildcards.sample}.err
-
 make_bigwig_scer_cpm:
   cpus-per-task: 4
   mem: "16G"
@@ -108,7 +97,7 @@ bedgraph_to_bigwig_mean_spikein:
   name: "{rule}.{wildcards.group}"
   output: logs/{rule}.{wildcards.group}.out
   error: logs/{rule}.{wildcards.group}.err
-  
+
 # ------------------------------------------------------------------------------
 # BedGraph creation
 # ------------------------------------------------------------------------------
@@ -140,6 +129,17 @@ make_bedgraph_scer_cpm:
   error: logs/{rule}.{wildcards.sample}.err
 
 # ------------------------------------------------------------------------------
+# CPM normalization
+# ------------------------------------------------------------------------------
+calculate_total_reads_cpm:
+  cpus-per-task: 2
+  mem: "8G"
+  time: "00:30:00"
+  name: "{rule}.{wildcards.sample}"
+  output: logs/{rule}.{wildcards.sample}.out
+  error: logs/{rule}.{wildcards.sample}.err
+
+# ------------------------------------------------------------------------------
 # Merging coverage
 # ------------------------------------------------------------------------------
 merge_bedgraphs_mean_cpm:
@@ -159,7 +159,7 @@ merge_bedgraphs_mean_spikein:
   name: "{rule}.{wildcards.group}"
   output: logs/{rule}.{wildcards.group}.out
   error: logs/{rule}.{wildcards.group}.err
-  
+
 # ------------------------------------------------------------------------------
 # Calculating spike-in
 # ------------------------------------------------------------------------------
@@ -184,15 +184,6 @@ bedgraph_to_wig_mean_cpm:
   output: logs/{rule}.{wildcards.group}.out
   error: logs/{rule}.{wildcards.group}.err
 
-bedgraph_to_wig_cpm:
-  cpus-per-task: 2
-  mem: "8G"
-  cores: 2
-  time: "01:00:00"
-  name: "{rule}.{wildcards.sample}"
-  output: logs/{rule}.{wildcards.sample}.out
-  error: logs/{rule}.{wildcards.sample}.err
-
 bedgraph_to_wig_mean_spikein:
   cpus-per-task: 2
   mem: "8G"
@@ -201,6 +192,15 @@ bedgraph_to_wig_mean_spikein:
   name: "{rule}.{wildcards.group}"
   output: logs/{rule}.{wildcards.group}.out
   error: logs/{rule}.{wildcards.group}.err
+
+bedgraph_to_wig_cpm:
+  cpus-per-task: 2
+  mem: "8G"
+  cores: 2
+  time: "01:00:00"
+  name: "{rule}.{wildcards.sample}"
+  output: logs/{rule}.{wildcards.sample}.out
+  error: logs/{rule}.{wildcards.sample}.err
 
 # ------------------------------------------------------------------------------
 # Plot Generation
