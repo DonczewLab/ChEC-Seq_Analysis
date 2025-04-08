@@ -12,24 +12,32 @@ configfile: "config/config.yml"
 ##                  Specific Steps in Pipeline                  ##
 ##################################################################
 
-# Steps:
+#  Steps:
 #  1) FastQC
 #  2) Adapter Trim (BBDuk)
 #  3) Align to S. cerevisiae (primary, no spike-in)
 #  4) Align to D. melanogaster (spike-in)
 #  5) Create Raw BigWig (from scer)
 #  6) Create Raw BedGraph (from scer)
-#  7) Calculate Spike-In Factors (all samples -> single CSV)
-#  8) Create Spike-In Normalized BigWigs
-#  9) Create Spike-In Normalized BedGraph
-#  10) Create CPM Normalized BigWigs
-#  11) Create CPM Normalized BedGraphs
-#  12) Mean coverage BedGraphs
-#  13) Mean coverage BigWigs
-#  14) Make all Wigs
-#  15) Alignment Stats Plot
-#  16) Fragment Length Files
-#  17) Fragment Length Distribution
+#  7) Calculate Spike-In Factors (all samples → single CSV)
+#  8) Create Spike-In Normalized BigWigs (per sample)
+#  9) Create Spike-In Normalized BedGraphs (per sample)
+# 10a) Create Spike-In Normalized Mean BedGraphs (group average)
+# 10b) Create Spike-In Normalized Mean BigWigs (group average)
+# 10c) Create Spike-In Normalized Mean Wig files (group average)
+# 11a) Calculate scale-in factor from include list (CPM normalization)
+# 11b) Save total read counts from include list
+# 12) Create CPM Normalized BigWigs (per sample)
+# 13) Create CPM Normalized BedGraphs (per sample)
+# 14a) Create Mean CPM BedGraphs (group average)
+# 14b) Create Mean CPM BigWigs (group average)
+# 14c) Create Mean CPM Wig files (group average)
+# 15a) Create Raw Wig files (per sample)
+# 15b) Create Spike-in Wig files (per sample)
+# 15c) Create CPM Wig files (per sample)
+# 16) Plot Alignment Stats (stacked bar and box plots)
+# 17) Generate Fragment Length Files (per sample)
+# 18) Plot Fragment Length Distribution (violin & line plots)
 
 ##################################################################
 ##                    Define input functions                    ##
@@ -57,6 +65,7 @@ def fq_dict_from_sample(wildcards):
 # Extract unique merge groups from the new column (e.g. DMSO, IAA, etc.)
 merge_groups = samples_df["merge_group"].unique().tolist()
 
+# define begraphs input for average scale factor (CPM) tracks
 def bedgraphs_for_group(wildcards):
     """
     Return a list of bedGraph files belonging to 'merge_group' == wildcards.group.
@@ -69,6 +78,20 @@ def bedgraphs_for_group(wildcards):
     # Build the bedGraph filenames for those samples
     return [
         f"results/bedgraph/cpm/{sample}_cpm.bg"
+        for sample in samples_in_group
+    ]
+
+# define bedgraphs input for average spike in tracks
+def spikein_bedgraphs_for_group(wildcards):
+    """
+    Return a list of spike-in normalized bedGraph files for the given merge_group.
+    """
+    samples_in_group = [
+        s for s in SAMPLES
+        if samples_df.loc[s, "merge_group"] == wildcards.group
+    ]
+    return [
+        f"results/bedgraph/spikein/{sample}_spikein.bg"
         for sample in samples_in_group
     ]
 
@@ -109,27 +132,30 @@ rule all:
         # 9) Spike-in normalized BedGraph
         expand("results/bedgraph/spikein/{sample}_spikein.bg", sample=SAMPLES),
 
-        # 10) Calculate scale in factor for CPM files
+        # 10) Spike-in normalized average signal BedGraph, BigWig, and Wig
+        expand("results/bedgraph/spikein_mean/{group}_spikein_mean.bg", group=merge_groups),
+        expand("results/bigwig/spikein_mean/{group}_spikein_mean.bw", group=merge_groups),
+        expand("results/wig/spikein_mean/{group}_spikein_mean.wig", group=merge_groups),
+
+        # 11) Calculate scale in factor for CPM files
         expand("results/scale_reads/{sample}_total_reads_cpm.txt", sample=SAMPLES),
         expand("results/scale_reads/{sample}_scale_factor_include.txt", sample=SAMPLES),
 
-        # 11) CPM BigWigs
+        # 12) CPM BigWigs
         expand("results/bigwig/cpm/{sample}_cpm.bw", sample=SAMPLES),
 
-        # 12) CPM BegGraphs
+        # 13) CPM BegGraphs
         expand("results/bedgraph/cpm/{sample}_cpm.bg", sample=SAMPLES),
 
-        # 13) Mean coverage BedGraphs
+        # 14) Mean coverage BedGraphs, BigWigs, and Wigs
         expand("results/bedgraph/cpm_mean/{group}_cpm_mean.bg", group=merge_groups),
-
-        # 14) Mean coverage BigWigs
         expand("results/bigwig/cpm_mean/{group}_cpm_mean.bw", group=merge_groups),
+        expand("results/wig/cpm_mean/{group}_cpm_mean.wig", group=merge_groups),
 
         # 15) Make all Wigs
         expand("results/wig/raw/{sample}_raw.wig", sample=SAMPLES),
         expand("results/wig/spikein/{sample}_spikein.wig", sample=SAMPLES),
         expand("results/wig/cpm/{sample}_cpm.wig", sample=SAMPLES),
-        expand("results/wig/cpm_mean/{group}_cpm_mean.wig", group=merge_groups),
 
         # 16) Alignment Stats Plot (stacked bar and box plots)
         "results/plots/alignment_stats.png",
@@ -444,6 +470,72 @@ EOF
                     --numberOfProcessors 4 \
                     --scaleFactor $factor \
                     --blackListFileName {params.blacklist}
+        """
+
+
+##################################################################
+##                     Merge SpikeIn Bedgraphs                  ##
+##################################################################
+
+rule merge_bedgraphs_mean_spikein:
+    """
+    Combine all spike-in bedGraphs for a given merge_group and calculate the average.
+    """
+    input:
+        spikein_bedgraphs_for_group
+    output:
+        "results/bedgraph/spikein_mean/{group}_spikein_mean.bg"
+    envmodules:
+        config["bedtools"]
+    log:
+        "results/logs/bedgraph/merge_spikein_{group}.log"
+    shell:
+        r"""
+        bedtools unionbedg -i {input} | \
+        awk 'OFS="\t" {{
+          sum=0; for (col=4; col<=NF; col++) sum += $col;
+          print $1,$2,$3,sum/(NF-3);
+        }}' | sort -k1,1 -k2,2n > {output}
+        """
+
+
+##################################################################
+##                 BedGraph to BigWig (Spike In)                ##
+##################################################################
+
+rule bedgraph_to_bigwig_mean_spikein:
+    input:
+        "results/bedgraph/spikein_mean/{group}_spikein_mean.bg"
+    output:
+        "results/bigwig/spikein_mean/{group}_spikein_mean.bw"
+    params:
+        genome_file=config["genome_file_scer"]
+    envmodules:
+        config["ucsc"]
+    log:
+        "results/logs/bedgraph/bw_spikein_mean_{group}.log"
+    shell:
+        """
+        bedGraphToBigWig {input} {params.genome_file} {output} 2> {log}
+        """
+
+
+##################################################################
+##                   BedGraph to Wig (Spike In)                 ##
+##################################################################
+
+rule bedgraph_to_wig_mean_spikein:
+    input:
+        "results/bedgraph/spikein_mean/{group}_spikein_mean.bg"
+    output:
+        "results/wig/spikein_mean/{group}_spikein_mean.wig"
+    envmodules:
+        config["python"]
+    log:
+        "results/logs/bedgraph/wig_convert_spikein_{group}.log"
+    shell:
+        """
+        python scripts/convert_bedgraph_to_wig.py {input} {output} 2> {log}
         """
 
 
