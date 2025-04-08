@@ -282,7 +282,7 @@ rule make_bigwig_raw_scer:
             --binSize {params.binSize} \
             --numberOfProcessors 4 \
             --normalizeUsing None \
-            --blackListFileName {params.blacklist}
+            --blackListFileName {params.blacklist} 2> {log} 
         """
 
 
@@ -310,7 +310,7 @@ rule make_bedgraph_raw_scer:
             --binSize {params.binSize} \
             --numberOfProcessors 4 \
             --normalizeUsing None \
-            --blackListFileName {params.blacklist}
+            --blackListFileName {params.blacklist} 2> {log} 
         """
 
 
