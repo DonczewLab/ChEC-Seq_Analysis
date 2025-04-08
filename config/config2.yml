@@ -1,0 +1,46 @@
+## samples file
+samples_csv: "config/samples.csv"
+
+# ==============================================================================
+# GENOME and BLACKLIST PATHS
+# ==============================================================================
+
+# Primary (no spike-in) genome = S. cerevisiae
+scer_genome: "/hpc-prj/donczew/genomic_resources/Scerevisiae_GCF_000146045.2/SGD_R64-3-1_genome_bowtie2_index/SGD_R64-3-1_genome"
+includelist_scer: "/hpc-prj/donczew/genomic_resources/Scerevisiae_GCF_000146045.2/SGD_R64-3-1_includelist.bed"
+genome_file_scer: "/hpc-prj/donczew/genomic_resources/Scerevisiae_GCF_000146045.2/SGD_R64-3-1_genomefile.txt"
+
+# Default spike-in genome = S. pombe
+spikein_genome: "/hpc-prj/donczew/genomic_resources/Spombe_GCF_000002945.1/NCBI_ASM294v2_genome_bowtie2_index/NCBI_ASM294v2_genome"
+
+# ------------------------------------------------------------------------------
+# Optionally, if you want to switch to D. melanogaster as spike-in, change spikein_genome with specified path found below:
+# spom
+# spom_genome: "/hpc-prj/donczew/genomic_resources/Spombe_GCF_000002945.1/NCBI_ASM294v2_genome_bowtie2_index/NCBI_ASM294v2_genome"
+# dmel
+# dmel_genome: "/hpc-prj/donczew/genomic_resources/Dmelanogaster_GCF_000001215.4/NCBI_R6plusISO1MT_genome_bowtie2_index/NCBI_R6plusISO1MT_genome"
+# ------------------------------------------------------------------------------
+
+# ==============================================================================
+# ADAPTER FILE (BBDuk)
+# ==============================================================================
+bbmap_ref: "/hpc-prj/donczew/genomic_resources/bbmap/truseq_universal_adapters.fa"
+
+# ==============================================================================
+# BIGWIG / DEEPTOOLS PARAMETERS
+# ==============================================================================
+binSize: 1
+
+# ==============================================================================
+# SOFTWARE MODULE VERSIONS
+# ==============================================================================
+fastqc: "fastqc/0.12.1"
+multiqc: "multiqc/1.21"
+bbmap: "bbmap/39.06"
+bowtie2: "bowtie2/2.5.0"
+samtools: "samtools/1.18"
+deeptools: "deeptools/3.5.4"
+bedtools: "bedtools/2.30.0"
+ucsc: "ucsc/20200225"
+python: "python/3.10.2"
+R: "R/4.4.1-mkl"
