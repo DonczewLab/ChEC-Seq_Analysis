@@ -7,7 +7,7 @@
 
 ## 1) Project Description
 
-**ChEC-seq Analysis Snakemake Workflow** is a Snakemake pipeline designed for Chromatin Endogenous Cleavage (ChEC) experiments. Rather than manually invoking each step (QC, trimming, alignment, coverage generation, mean coverage merging, WIG conversion, and plotting alignment metrics), this pipeline automates the entire process from **raw FASTQ** inputs to **multiple coverage tracks** (raw, CPM, and spike-in normalized), as well as merged replicates to create an average signal track via a `merge_group` column in `samples.csv`.
+**ChEC-seq Analysis Snakemake Workflow** is a Snakemake pipeline designed for Chromatin Endogenous Cleavage (ChEC) experiments. Rather than manually invoking each step (QC, trimming, alignment, coverage generation, mean coverage merging, WIG conversion, and plotting alignment metrics), this pipeline automates the entire process from **raw FASTQ** inputs to **multiple coverage tracks** (raw, CPM, and spike-in normalized), as well as merged replicates to create an average signal track via a `merge_group` column in `samples.csv`. CPM tracks are created by calculating the total number of reads in a specified include list region (e.g., non-rDNA genome), then generating a scale factor as the reciprocal of reads per million (i.e., 1 / (total_reads / 1,000,000)), which is applied during coverage generation.
 
 ### Key Features
 
@@ -20,7 +20,7 @@
 
 - **Multiple Coverage Outputs**  
   + **Raw** BigWig, BedGrapn, & Wig: unnormalized coverage  
-  + **CPM** BigWig, BedGraph, & Wig: normalized to read depth  
+  + **CPM** BigWig, BedGraph, & Wig: a scale factor is generated as the reciprocal of reads per million and applied to normalize coverage to a read depth of 1×10⁶
   + **Spike-In** BigWig, BedGraph, & Wig: additional normalization via spike-in factor  
   + **Average Coverage** BigWig, BedGraphs & Wig: average signal for single samples and merged sets
 
