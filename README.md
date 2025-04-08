@@ -19,7 +19,7 @@
   + FastQC runs on both raw and trimmed FASTQs
 
 - **Multiple Coverage Outputs**  
-  + **Raw** BigWig, BedGrapn, & Wig: unnormalized coverage  
+  + **Raw** BigWig, BedGraph, & Wig: unnormalized coverage  
   + **CPM** BigWig, BedGraph, & Wig: a scale factor is generated as the reciprocal of reads per million and applied to normalize coverage to a read depth of 1×10⁶
   + **Spike-In** BigWig, BedGraph, & Wig: additional normalization via spike-in factor  
   + **Average Coverage** BigWig, BedGraphs & Wig: average signal for single samples and merged sets
