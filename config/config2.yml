@@ -7,8 +7,9 @@ samples_csv: "config/samples.csv"
 
 # Primary (no spike-in) genome = S. cerevisiae
 scer_genome: "/hpc-prj/donczew/genomic_resources/Scerevisiae_GCF_000146045.2/SGD_R64-3-1_genome_bowtie2_index/SGD_R64-3-1_genome"
-includelist_scer: "/hpc-prj/donczew/genomic_resources/Scerevisiae_GCF_000146045.2/SGD_R64-3-1_includelist.bed"
 genome_file_scer: "/hpc-prj/donczew/genomic_resources/Scerevisiae_GCF_000146045.2/SGD_R64-3-1_genomefile.txt"
+blacklist_scer: "/s/cobre-dev-bio/boydk/Rafal_Lab/saccharomyces_cerevisiae_scer_genome/SGD_R64-3-1_blacklist.bed"
+include_list: "/hpc-prj/donczew/genomic_resources/Scerevisiae_GCF_000146045.2/SGD_R64-3-1_includelist.bed"
 
 # Default spike-in genome = S. pombe
 spikein_genome: "/hpc-prj/donczew/genomic_resources/Spombe_GCF_000002945.1/NCBI_ASM294v2_genome_bowtie2_index/NCBI_ASM294v2_genome"
