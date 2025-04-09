@@ -22,7 +22,7 @@ for arg in sys.argv[2:]:
 sample_dict = {}
 
 def get_sample_name(path):
-    base = path.split("/")[-1]  # e.g. "SampleA.bam"
+    base = path.split("/")[-1]
     return re.sub(r"\.bam$", "", base)
 
 for b in bams_scer:
@@ -38,20 +38,20 @@ for sample, bams in sample_dict.items():
     scer_bam = bams.get("scer")
     spikein_bam = bams.get("spikein")
 
-    # skip if either missing
     if not scer_bam or not spikein_bam:
         continue
 
-    scer_cmd = ["samtools", "view", "-c", "-F", "4", scer_bam]
-    scer_count = int(subprocess.check_output(scer_cmd).decode().strip())
+    scer_count = int(subprocess.check_output(["samtools", "view", "-c", "-F", "4", scer_bam]).decode().strip())
+    spikein_count = int(subprocess.check_output(["samtools", "view", "-c", "-F", "4", spikein_bam]).decode().strip())
 
-    spikein_cmd = ["samtools", "view", "-c", "-F", "4", spikein_bam]
-    spikein_count = int(subprocess.check_output(spikein_cmd).decode().strip())
-
+    # Raw factor (not inverted)
     total = scer_count + spikein_count
-    factor = 1.0 if total == 0 else 100 * (spikein_count / float(total))
+    raw_factor = 100 * (spikein_count / total) if total > 0 else 1.0
 
-    results.append((sample, scer_count, spikein_count, factor))
+    # Inverted factor for bamCoverage
+    scale_factor = 1 / raw_factor if raw_factor > 0 else 1.0
+
+    results.append((sample, scer_count, spikein_count, scale_factor))
 
 with open(out_csv, "w") as out:
     out.write("sample,scer_reads,spikein_reads,spikein_factor\n")
