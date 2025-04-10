@@ -1,6 +1,6 @@
 # cluster_config.yml - cluster configuration
 __default__:
-  account: sansam-lab
+  account: donczew-lab
   partition: serial
   time: "08:00:00"
   cpus-per-task: 2
