@@ -140,6 +140,7 @@ rule all:
         # 11) Calculate scale in factor for CPM files
         expand("results/scale_reads/{sample}_total_reads_cpm.txt", sample=SAMPLES),
         expand("results/scale_reads/{sample}_scale_factor_include.txt", sample=SAMPLES),
+        "results/scale_reads/cpm_scale_factors.csv",
 
         # 12) CPM BigWigs
         expand("results/bigwig/cpm/{sample}_cpm.bw", sample=SAMPLES),
@@ -562,6 +563,31 @@ rule calculate_total_reads_cpm:
         echo $total_reads > {output.total_reads}
         echo $scale_factor > {output.scale_factor}
         """
+
+
+##################################################################
+##                      Scale Factor Summary                    ##
+##################################################################
+
+rule gather_cpm_factors:
+    input:
+        total_reads = expand("results/scale_reads/{sample}_total_reads_cpm.txt", sample=SAMPLES),
+        scale_factors = expand("results/scale_reads/{sample}_scale_factor_include.txt", sample=SAMPLES)
+    output:
+        "results/scale_reads/cpm_scale_factors.csv"
+    run:
+        import pandas as pd
+
+        records = []
+        for sample in SAMPLES:
+            with open(f"results/scale_reads/{sample}_total_reads_cpm.txt") as f:
+                total = int(f.read().strip())
+            with open(f"results/scale_reads/{sample}_scale_factor_include.txt") as f:
+                factor = float(f.read().strip())
+            records.append({"sample": sample, "total_reads_cpm": total, "scale_factor_cpm": round(factor, 6)})
+
+        df = pd.DataFrame(records)
+        df.to_csv(output[0], index=False)
 
 
 ##################################################################
