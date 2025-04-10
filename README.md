@@ -121,33 +121,37 @@ A minimal test dataset can be placed in a `resources/` folder (not included curr
   + `spikein_factors.csv` in `results/spikein_factors/`
     + lists scer/dmel read counts and a `spikein_factor` for each sample
 
-4. **BigWig Files**
+4. **CPM Scale Factors**
+  + `cpm_scale_factors.csv` in `results/scale_reads/`
+    + lists include region read counts and `scale_factor` for each sample
+
+5. **BigWig Files**
   + `*_raw.bw` in `results/bigwig/raw/`  
   + `*_cpm.bw` in `results/bigwig/cpm/`  
   + `*_spikein.bw` in `results/bigwig/spikein/`
   + `*_cpm_mean.bw` in `results/bigwig/cpm_mean/`
 
 
-5. **BedGraph Files**
+6. **BedGraph Files**
   + `*_raw.bg` in `results/bedgraph/raw/`  
   + `*_cpm.bg` in `results/bedgraph/cpm/`  
   + `*_spikein.bg` in `results/bedgraph/spikein/`    
   + `*_cpm_mean.bg` in `results/bedgraph/cpm_mean/`
 
-6. **WIG Files**
+7. **WIG Files**
   + `*_raw.wig` in `results/wig/raw/`  
   + `*_cpm.wig` in `results/wig/cpm/`  
   + `*_spikein.wig` in `results/wig/spikein/`       
   + `*_cpm_mean.wig` in `results/wig/cpm_mean/`
 
-7. **Alignment Statistics Plot**
+8. **Alignment Statistics Plot**
   + `alignment_stats.png` in `results/plots/`
     + Total **paired-end reads** per sample (boxplot)
     + **Overall alignment rate** per sample (boxplot)
     + **Total spike-in reads** per sample (boxplot)
     + **Spike-in factor** per sample (barplot, grouped by replicate)
 
-8. **Fragment Length Distribution Plot**:
+9. **Fragment Length Distribution Plot**:
   + `fragment_length_plot.png` in `results/plots/`
     + A two-panel violin and line plot showing the distribution of **insert fragment lengths** for each sample, calculated from properly paired alignments.
 
