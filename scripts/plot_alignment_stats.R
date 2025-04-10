@@ -91,10 +91,10 @@ p3 <- ggplot(spikein_data, aes(x = merge_group, y = spikein_reads / 1e6, fill = 
   guides(fill = "none")
 
 # Plot 4: Spike-in factor per sample (bar plot)
-p4 <- ggplot(spikein_data, aes(x = sample, y = raw_factor, fill = merge_group)) +
+p4 <- ggplot(spikein_data, aes(x = sample, y = spikein_factor, fill = merge_group)) +
   geom_bar(stat = "identity") +
   theme_bw(base_size = 14) +
-  ylab("Raw Spike-In Factor") +
+  ylab("Spike-In Factor") +
   xlab("Sample") +
   ggtitle("Spike-In Factor per Sample") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
