@@ -129,7 +129,7 @@ make_bedgraph_scer_cpm:
   error: logs/{rule}.{wildcards.sample}.err
 
 # ------------------------------------------------------------------------------
-# CPM normalization
+# CPM normalization / Scaling Summary
 # ------------------------------------------------------------------------------
 calculate_total_reads_cpm:
   cpus-per-task: 2
@@ -139,6 +139,15 @@ calculate_total_reads_cpm:
   output: logs/{rule}.{wildcards.sample}.out
   error: logs/{rule}.{wildcards.sample}.err
 
+gather_cpm_factors:
+  cpus-per-task: 2
+  mem: "8G"
+  cores: 2
+  time: "00:20:00"
+  name: "{rule}"
+  output: logs/{rule}.out
+  error: logs/{rule}.err
+  
 # ------------------------------------------------------------------------------
 # Merging coverage
 # ------------------------------------------------------------------------------
