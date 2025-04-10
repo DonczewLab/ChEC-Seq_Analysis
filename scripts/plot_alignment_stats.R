@@ -96,7 +96,7 @@ p4 <- ggplot(spikein_data, aes(x = sample, y = spikein_factor, fill = merge_grou
   theme_bw(base_size = 14) +
   ylab("Spike-In Factor") +
   xlab("Sample") +
-  ggtitle("Inverse Spike-In Factor per Sample") +
+  ggtitle("Spike-In Factor per Sample") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   guides(fill = guide_legend(title = "Group"))
 
