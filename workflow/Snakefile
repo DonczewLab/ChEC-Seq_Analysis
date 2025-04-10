@@ -403,7 +403,7 @@ with open("{input.csv}", "r") as inf:
     reader = csv.DictReader(inf)
     for row in reader:
         if row["sample"] == sample_name:
-            factor = float(row["spikein_factor"])
+            factor = float(row["inverse_spikein_factor"])
             break
 print(factor)
 EOF
@@ -454,7 +454,7 @@ with open("{input.csv}", "r") as inf:
     reader = csv.DictReader(inf)
     for row in reader:
         if row["sample"] == sample_name:
-            factor = float(row["spikein_factor"])
+            factor = float(row["inverse_spikein_factor"])
             break
 print(factor)
 EOF
