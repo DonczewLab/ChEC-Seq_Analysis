@@ -100,7 +100,7 @@ p3 <- ggplot(spikein_data, aes(x = merge_group, y = spikein_reads / 1e6, fill = 
 
 # Plot 4: Spike-in factor per sample (bar plot)
 p4 <- ggplot(spikein_data, aes(x = sample, y = spikein_factor, fill = merge_group)) +
-  geom_bar(stat = "identity") +
+  geom_bar(stat = "identity", alpha = 0.7) +
   theme_bw(base_size = 14) +
   ylab("Spike-In Factor") +
   xlab("Sample") +
@@ -110,7 +110,7 @@ p4 <- ggplot(spikein_data, aes(x = sample, y = spikein_factor, fill = merge_grou
 
 # Plot 5: Inverse Spike-in factor per sample (bar plot)
 p5 <- ggplot(spikein_data, aes(x = sample, y = inverse_spikein_factor, fill = merge_group)) +
-  geom_bar(stat = "identity") +
+  geom_bar(stat = "identity", alpha = 0.7) +
   theme_bw(base_size = 14) +
   ylab("Inverse Spike-In Factor") +
   xlab("Sample") +
@@ -120,7 +120,7 @@ p5 <- ggplot(spikein_data, aes(x = sample, y = inverse_spikein_factor, fill = me
 
 # Plot 6: CPM Scaling Factor per sample (bar plot)
 p6 <- ggplot(cpm_data, aes(x = sample, y = scale_factor_cpm, fill = merge_group)) +
-  geom_bar(stat = "identity") +
+  geom_bar(stat = "identity", alpha = 0.7) +
   theme_bw(base_size = 14) +
   ylab("CPM Scale Factor") +
   xlab("Sample") +
