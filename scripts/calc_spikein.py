@@ -51,11 +51,11 @@ for sample, bams in sample_dict.items():
     # Inverted factor for bamCoverage
     scale_factor = 1 / raw_factor if raw_factor > 0 else 1.0
 
-    results.append((sample, scer_count, spikein_count, scale_factor))
+    results.append((sample, scer_count, spikein_count, raw_factor, scale_factor))
 
 with open(out_csv, "w") as out:
-    out.write("sample,scer_reads,spikein_reads,spikein_factor\n")
-    for s, scer_r, spikein_r, f in sorted(results):
-        out.write(f"{s},{scer_r},{spikein_r},{f}\n")
+    out.write("sample,scer_reads,spikein_reads,raw_factor,spikein_factor\n")
+    for s, scer_r, spikein_r, raw, f in sorted(results):
+        out.write(f"{s},{scer_r},{spikein_r},{raw},{f}\n")
 
 print(f"Wrote spike-in factors to {out_csv}")
