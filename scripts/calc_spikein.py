@@ -54,7 +54,7 @@ for sample, bams in sample_dict.items():
     results.append((sample, scer_count, spikein_count, raw_factor, scale_factor))
 
 with open(out_csv, "w") as out:
-    out.write("sample,scer_reads,spikein_reads,raw_factor,spikein_factor\n")
+    out.write("sample,scer_reads,spikein_reads,spikein_factor,inverse_spikein_factor\n")
     for s, scer_r, spikein_r, raw, f in sorted(results):
         out.write(f"{s},{scer_r},{spikein_r},{raw},{f}\n")
 
