@@ -60,6 +60,14 @@ spikein_data <- read.csv(spikein_csv, stringsAsFactors = FALSE) %>%
 spikein_data$sample <- factor(spikein_data$sample, levels = alignStats$sample)
 spikein_data$merge_group <- factor(spikein_data$merge_group, levels = unique(alignStats$merge_group))
 
+# Load CPM scale factors
+cpm_data <- read.csv("results/scale_reads/cpm_scale_factors.csv", stringsAsFactors = FALSE) %>%
+  left_join(samples_df[, c("sample", "merge_group")], by = "sample")
+
+# Ensure factor levels match for plotting
+cpm_data$sample <- factor(cpm_data$sample, levels = alignStats$sample)
+cpm_data$merge_group <- factor(cpm_data$merge_group, levels = unique(alignStats$merge_group))
+
 # Plot 1: Total paired-end reads
 p1 <- ggplot(alignStats, aes(x = merge_group, y = total_reads / 1e6, fill = merge_group)) +
   geom_boxplot(alpha = 0.7) +
@@ -100,8 +108,28 @@ p4 <- ggplot(spikein_data, aes(x = sample, y = spikein_factor, fill = merge_grou
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   guides(fill = guide_legend(title = "Group"))
 
+# Plot 5: Inverse Spike-in factor per sample (bar plot)
+p5 <- ggplot(spikein_data, aes(x = sample, y = inverse_spikein_factor, fill = merge_group)) +
+  geom_bar(stat = "identity") +
+  theme_bw(base_size = 14) +
+  ylab("Inverse Spike-In Factor") +
+  xlab("Sample") +
+  ggtitle("Inverse Spike-In Factor (used in scaling)") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  guides(fill = guide_legend(title = "Group"))
+
+# Plot 6: CPM Scaling Factor per sample (bar plot)
+p6 <- ggplot(cpm_data, aes(x = sample, y = scale_factor_cpm, fill = merge_group)) +
+  geom_bar(stat = "identity") +
+  theme_bw(base_size = 14) +
+  ylab("CPM Scale Factor") +
+  xlab("Sample") +
+  ggtitle("CPM Scale Factor per Sample") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  guides(fill = guide_legend(title = "Group"))
+
 # Combine plots
-final_plot <- ggarrange(p1, p2, p3, p4, ncol = 2, nrow = 2)
+final_plot <- ggarrange(p1, p2, p3, p4, p5, p6, ncol = 2, nrow = 3)
 
 # Save to file
-ggsave(output_file, final_plot, width = 16, height = 12)
+ggsave(output_file, final_plot, width = 16, height = 18)
