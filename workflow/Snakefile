@@ -22,7 +22,7 @@ configfile: "config/config.yml"
 ##################################################################
 
 #  Steps:
-#  1) FastQC
+#  1) FastQC / MultiQC
 #  2) Adapter Trim (BBDuk)
 #  3) Align to S. cerevisiae (primary, no spike-in)
 #  4) Align to D. melanogaster (spike-in)
