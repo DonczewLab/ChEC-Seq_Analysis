@@ -114,9 +114,9 @@ rule all:
         expand("results/qc/fastqc/{sample}_R1_fastqc.html", sample=SAMPLES),
         expand("results/qc/fastqc/{sample}_R2_fastqc.html", sample=SAMPLES),
 
-        # 2) Trimmed FASTQs
-        expand("results/trimmed/{sample}_R1_trimmed.fastq.gz", sample=SAMPLES),
-        expand("results/trimmed/{sample}_R2_trimmed.fastq.gz", sample=SAMPLES),
+        # 2) Trimmed FASTQs (commented out because they are temp files)
+        #expand("results/trimmed/{sample}_R1_trimmed.fastq.gz", sample=SAMPLES),
+        #expand("results/trimmed/{sample}_R2_trimmed.fastq.gz", sample=SAMPLES),
 
         # 3) scer BAM + BAI
         expand("results/alignment/scer/{sample}.bam", sample=SAMPLES),
