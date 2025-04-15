@@ -228,6 +228,7 @@ rule multiqc_fastqc:
         "results/logs/qc/multiqc.log"
     shell:
         """
+        rm -rf {params.outdir}
         mkdir -p {params.outdir}
         multiqc results/qc/fastqc -o {params.outdir} 2> {log}
         """
