@@ -110,9 +110,11 @@ def spikein_bedgraphs_for_group(wildcards):
 
 rule all:
     input:
-        # 1) FastQC
+        # 1) FastQC / MultiQC
         expand("results/qc/fastqc/{sample}_R1_fastqc.html", sample=SAMPLES),
         expand("results/qc/fastqc/{sample}_R2_fastqc.html", sample=SAMPLES),
+        "results/qc/multiqc/multiqc_report.html",
+        "results/qc/multiqc/multiqc_data.zip",
 
         # 2) Trimmed FASTQs (commented out because they are temp files)
         #expand("results/trimmed/{sample}_R1_trimmed.fastq.gz", sample=SAMPLES),
@@ -205,6 +207,32 @@ rule fastqc_raw:
         baseR2=$(basename {input.r2} .fastq.gz)
         mv $dir/${{baseR2}}_fastqc.html {output.html2} || true
         mv $dir/${{baseR2}}_fastqc.zip {output.zip2} || true
+        """
+
+
+##################################################################
+##                     Summarize with MultiQC                   ##
+##################################################################
+
+rule multiqc_fastqc:
+    input:
+        expand("results/qc/fastqc/{sample}_R1_fastqc.zip", sample=SAMPLES),
+        expand("results/qc/fastqc/{sample}_R2_fastqc.zip", sample=SAMPLES)
+    output:
+        html="results/qc/multiqc/multiqc_report.html",
+        zip="results/qc/multiqc/multiqc_data.zip"
+    params:
+        outdir="results/qc/multiqc"
+    envmodules:
+        config["multiqc"]
+    log:
+        "results/logs/qc/multiqc.log"
+    shell:
+        """
+        mkdir -p {params.outdir}
+        multiqc results/qc/fastqc -o {params.outdir} 2> {log}
+        cp {params.outdir}/multiqc_report.html {output.html}
+        cp {params.outdir}/multiqc_data.zip {output.zip}
         """
 
 
