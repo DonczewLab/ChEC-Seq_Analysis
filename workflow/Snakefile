@@ -4,8 +4,17 @@ configfile: "config/config.yml"
 ##                         Author Info                          ##
 ##################################################################
 
-# Author: Kevin Boyd
-# Date: March 27, 2025
+# Author: Kevin A. Boyd
+# Email: kevinboyd76@gmail.com
+# GitHub: https://github.com/kevinboyd76
+# Date Created: March 27, 2025
+# Last Modified: April 15, 2025
+# Version: 1.0.0
+#
+# Description: This workflow processes Chec-Seq data from raw FASTQ
+# files to normalized signal tracks with spike-in and scale factor 
+# correction.
+# 
 # Adapted from: Chec-Seq Protocol from Rafal Donczew & John Ridenour
 
 ##################################################################
