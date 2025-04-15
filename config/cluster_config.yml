@@ -25,9 +25,9 @@ multiqc_fastqc:
   mem: "32G"
   cores: 4
   time: "02:00:00"
-  name: "{rule}.{wildcards.sample}"
-  output: logs/{rule}.{wildcards.sample}.out
-  error: logs/{rule}.{wildcards.sample}.err
+  name: "{rule}"
+  output: logs/{rule}.out
+  error: logs/{rule}.err
   
 trim_adapters:
   cpus-per-task: 8
