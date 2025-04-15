@@ -218,7 +218,8 @@ rule multiqc_fastqc:
         expand("results/qc/fastqc/{sample}_R1_fastqc.zip", sample=SAMPLES),
         expand("results/qc/fastqc/{sample}_R2_fastqc.zip", sample=SAMPLES)
     output:
-        html="results/qc/multiqc/multiqc_report.html"
+        html="results/qc/multiqc/multiqc_report.html",
+        data_dir="results/qc/multiqc/multiqc_data"
     params:
         outdir="results/qc/multiqc"
     envmodules:
