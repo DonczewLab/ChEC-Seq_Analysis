@@ -12,11 +12,12 @@
 ### Key Features
 
 - **Flexible Spike-In Normalization**  
-  + Simultaneously aligns reads to the primary **S. cerevisiae** genome and a **spike-in** genome (e.g., *D. melanogaster*), calculating a per-sample scaling factor to accurately normalize coverage.
+  + Simultaneously aligns reads to the primary **S. cerevisiae** genome and a **spike-in** genome (e.g., *S. Pombe*), calculating a per-sample scaling factor to accurately normalize coverage.
 
 - **Automatic Trimming & QC**  
-  + BBDuk handles adapter removal  
-  + FastQC runs on both raw and trimmed FASTQs
+  + FastQC runs on raw FASTQs
+  + MultiQC summarizes all QC reports into one unified HTML report
+  + BBDuk handles adapter removal 
 
 - **Multiple Coverage Outputs**  
   + **Raw** BigWig, BedGraph, & Wig: unnormalized coverage  
@@ -43,7 +44,7 @@
 This pipeline is **ideal** for performing **ChEC-seq**. It is a user-friendly workflow with customizable `samples.csv` and `config.yml` files, enabling reproducible and flexible analysis:
 
 - Start with raw FASTQ reads  
-- Use an external spike-in organism (e.g., *D. melanogaster*) for normalization   
+- Use an external spike-in organism (e.g., *S. pombe* or *D. melanogaster*) for normalization   
 - Produce coverage files for genome browsers (BigWigs, BedGraphs, or WIGs)  
 - Merges replicates by condition or replicate group
 
@@ -57,13 +58,13 @@ All parameters and module versions are specified in `config/config.yml`
 
 **Key fields include**:
 - `scer_genome`: path to the **S. cerevisiae** Bowtie2 index  
-- `spikein_genome`: path to the **Spike In** Bowtie2 index (e.g., D. melanogaster)  
+- `spikein_genome`: path to the **Spike In** Bowtie2 index (e.g., S. pombe)  
 - `bbmap_ref`: adapter sequence reference for BBDuk  
 - `binSize`: bin size for coverage generation  
 - `fastqc, bowtie2, samtools, deeptools, bedtools, ucsc, python`: module versions for HPC
 
 **Changing Genomes**  
-+ If using a different spike-in (e.g. *S. pombe*), just update the relevant Bowtie2 index and references in `config.yml`.
++ If using a different spike-in (e.g. *D. melanogaster*), just update the relevant Bowtie2 index and references in `config.yml`.
 
 **Tool Versions and Modules**  
 + The `config.yml` file specifies all software and specific versions
@@ -73,7 +74,8 @@ All parameters and module versions are specified in `config/config.yml`
 ## 4) Tools & Modules
 
 This Snakemake pipeline relies on:
-- **FastQC** for read quality checks  
+- **FastQC** for read quality checks
+- **MultiQC** for summarizing FastQC reports
 - **BBDuk** (in **BBMap**) for adapter trimming  
 - **Bowtie2** for alignments  
 - **Samtools** for BAM conversions/indexing  
@@ -110,7 +112,8 @@ A minimal test dataset can be placed in a `resources/` folder (not included curr
 ## 7) Examples of Output
 
 1. **Trimming and QC**  
-  + FastQC HTML reports in `results/qc/fastqc/`  
+  + FastQC HTML reports in `results/qc/fastqc/`
+  + MultiQC HTML reports in `results/qc/multiqc/`
   + Trimmed FASTQs in `results/trimmed/`
 
 2. **Aligned Files**  
