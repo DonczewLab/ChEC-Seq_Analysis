@@ -224,7 +224,7 @@ rule multiqc_fastqc:
     envmodules:
         config["multiqc"]
     log:
-        "results/logs/qc/multiqc.log"
+        "results/logs/multiqc/multiqc.log"
     shell:
         """
         rm -rf {params.outdir}
