@@ -216,8 +216,8 @@ rule trim_adapters:
     input:
         unpack(fq_dict_from_sample)
     output:
-        r1_trim="results/trimmed/{sample}_R1_trimmed.fastq.gz",
-        r2_trim="results/trimmed/{sample}_R2_trimmed.fastq.gz"
+        r1_trim=temp("results/trimmed/{sample}_R1_trimmed.fastq.gz"),
+        r2_trim=temp("results/trimmed/{sample}_R2_trimmed.fastq.gz")
     params:
         bbmap_ref=config["bbmap_ref"]
     envmodules:
