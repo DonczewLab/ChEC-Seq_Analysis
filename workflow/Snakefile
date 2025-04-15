@@ -114,7 +114,6 @@ rule all:
         expand("results/qc/fastqc/{sample}_R1_fastqc.html", sample=SAMPLES),
         expand("results/qc/fastqc/{sample}_R2_fastqc.html", sample=SAMPLES),
         "results/qc/multiqc/multiqc_report.html",
-        "results/qc/multiqc/multiqc_data.zip",
 
         # 2) Trimmed FASTQs (commented out because they are temp files)
         #expand("results/trimmed/{sample}_R1_trimmed.fastq.gz", sample=SAMPLES),
@@ -219,8 +218,7 @@ rule multiqc_fastqc:
         expand("results/qc/fastqc/{sample}_R1_fastqc.zip", sample=SAMPLES),
         expand("results/qc/fastqc/{sample}_R2_fastqc.zip", sample=SAMPLES)
     output:
-        html="results/qc/multiqc/multiqc_report.html",
-        zip="results/qc/multiqc/multiqc_data.zip"
+        html="results/qc/multiqc/multiqc_report.html"
     params:
         outdir="results/qc/multiqc"
     envmodules:
