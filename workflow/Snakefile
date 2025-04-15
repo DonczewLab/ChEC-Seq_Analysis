@@ -231,8 +231,6 @@ rule multiqc_fastqc:
         """
         mkdir -p {params.outdir}
         multiqc results/qc/fastqc -o {params.outdir} 2> {log}
-        cp {params.outdir}/multiqc_report.html {output.html}
-        cp {params.outdir}/multiqc_data.zip {output.zip}
         """
 
 
