@@ -12,7 +12,7 @@
 ### Key Features
 
 - **Flexible Spike-In Normalization**  
-  + Simultaneously aligns reads to the primary **S. cerevisiae** genome and a **spike-in** genome (e.g., *S. Pombe*), calculating a per-sample scaling factor to accurately normalize coverage.
+  + Simultaneously aligns reads to the primary **S. cerevisiae** genome and a **spike-in** genome (e.g., *S. pombe*), calculating a per-sample scaling factor to accurately normalize coverage.
 
 - **Automatic Trimming & QC**  
   + FastQC runs on raw FASTQs
