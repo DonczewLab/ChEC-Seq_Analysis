@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/939591126.svg)](https://doi.org/10.5281/zenodo.15232549)
+
 # ChEC-seq Analysis Snakemake Workflow
 
 ![CHEC Analysis](/images/CHECSeq_pipeline.png)  
