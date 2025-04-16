@@ -1,3 +1,4 @@
+![GitHub Release Date](https://img.shields.io/github/release-date/RD-Cobre-Help/ChEC-Seq_Analysis)
 ![GitHub last commit](https://img.shields.io/github/last-commit/RD-Cobre-Help/ChEC-Seq_Analysis)
 ![GitHub contributors](https://img.shields.io/github/contributors/RD-Cobre-Help/ChEC-Seq_Analysis)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/w/RD-Cobre-Help/ChEC-Seq_Analysis)
