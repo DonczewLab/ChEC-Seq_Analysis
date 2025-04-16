@@ -1,3 +1,4 @@
+![GitHub contributors](https://img.shields.io/github/contributors/RD-Cobre-Help/ChEC-Seq_Analysis)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/w/RD-Cobre-Help/ChEC-Seq_Analysis)
 ![GitHub commits since latest release](https://img.shields.io/github/commits-since/RD-Cobre-Help/ChEC-Seq_Analysis/latest)
 [![DOI](https://zenodo.org/badge/939591126.svg)](https://doi.org/10.5281/zenodo.15232549)
