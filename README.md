@@ -7,6 +7,8 @@
 ![GitHub commits since latest release](https://img.shields.io/github/commits-since/RD-Cobre-Help/ChEC-Seq_Analysis/latest)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15238082.svg)](https://doi.org/10.5281/zenodo.15238082)
 
+![Downloads](https://img.shields.io/github/downloads/RD-Cobre-Help/ChEC-Seq_Analysis/total.svg?cacheBust=1)
+
 # ChEC-seq Analysis Snakemake Workflow
 
 ![CHEC Analysis](/images/CHECSeq_pipeline.png)  
