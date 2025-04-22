@@ -1,0 +1,48 @@
+{
+  "title": "ChEC-Seq_Analysis: A Snakemake Workflow for Chromatin Endogenous Cleavage Sequencing Data Processing",
+  "upload_type": "software",
+  "description": "ChEC-Seq_Analysis is a Snakemake workflow designed to streamline and standardize the analysis of Chromatin Endogenous Cleavage (ChEC) sequencing data. Starting from raw FASTQ files, the pipeline automates quality control, adapter trimming, alignment, coverage generation, and spike-in/CPM normalization. It supports coverage track creation at multiple normalization levels (raw, CPM, spike-in normalized) and computes merged average signal tracks using a sample grouping strategy defined in the samples.csv file. CPM normalization is calculated by quantifying reads in user-defined 'include' regions and applying a scale factor during coverage generation. The pipeline is designed for reproducibility and scalability on high-performance computing environments. It incorporates multiple bioinformatics tools for data processing, normalization, and visualization, including FastQC, MultiQC, BBDuk, Bowtie2, Samtools, deepTools, Bedtools, Python, R, and UCSC utilities.",
+  "creators": [
+    {
+      "name": "Boyd, Kevin A.",
+      "affiliation": "Oklahoma Medical Research Foundation",
+      "orcid": "0000-0001-6739-8103"
+    }
+  ],
+  "license": "Apache-2.0",
+  "keywords": [
+    "ChEC-seq",
+    "Snakemake",
+    "chromatin profiling",
+    "spike-in normalization",
+    "CPM normalization",
+    "bioinformatics",
+    "coverage tracks",
+    "epigenomics",
+    "genomics",
+    "data visualization",
+    "workflow",
+    "open science",
+    "high-throughput sequencing",
+    "FastQC",
+    "MultiQC",
+    "BBDuk",
+    "BBMap",
+    "Bowtie2",
+    "samtools",
+    "deepTools",
+    "bamCoverage",
+    "bedtools",
+    "Python",
+    "R",
+    "bedGraphToBigWig",
+    "UCSC tools"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/RD-Cobre-Help/ChEC-Seq_Analysis",
+      "relation": "isSupplementTo",
+      "scheme": "url"
+    }
+  ]
+}
