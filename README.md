@@ -5,7 +5,7 @@
 ![GitHub contributors](https://img.shields.io/github/contributors/RD-Cobre-Help/ChEC-Seq_Analysis)
 ![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/RD-Cobre-Help/ChEC-Seq_Analysis/total)
 ![GitHub commits since latest release](https://img.shields.io/github/commits-since/RD-Cobre-Help/ChEC-Seq_Analysis/latest)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15238082.svg)](https://doi.org/10.5281/zenodo.15238082)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15238082.svg)](https://doi.org/10.5281/zenodo.15232549)
 
 # ChEC-seq Analysis Snakemake Workflow
 
