@@ -206,3 +206,33 @@ snakemake -npr
 ```
 sbatch --wrap="snakemake -j 20 --use-envmodules --rerun-incomplete --latency-wait 300 --cluster-config config/cluster_config.yml --cluster 'sbatch -A {cluster.account} -p {cluster.partition} --cpus-per-task {cluster.cpus-per-task}  -t {cluster.time} --mem {cluster.mem} --output {cluster.output} --job-name {cluster.name}'"
 ```
+
+---
+
+## 10) Citation
+
+If you use this workflow in your research, please cite:
+
+**Boyd, K.A.**, Ridenour, J., & Donczew, R. (2025). *ChEC-Seq_Analysis: A reproducible Snakemake workflow for spike-in normalized chromatin cleavage data*. Zenodo. https://doi.org/10.5281/zenodo.15232549
+
+[![DOI](https://zenodo.org/badge/939591126.svg)](https://doi.org/10.5281/zenodo.15232549)
+
+---
+
+## 11) Authorship & Contributions
+
+**Kevin A. Boyd** – Designed and implemented the Snakemake workflow for a Slurm-managed HPC environment, modularized the pipeline structure, implemented all processing steps, integrated spike-in normalization support, designed all quality control plots, and created the documentation.  
+
+**John Ridenour** – Developed original ChEC-seq scripts used as the foundation for this pipeline.  
+
+**Rafal Donczew** – Principal Investigator; provided project direction, conceptual guidance, and experimental data for pipeline development.  
+
+This work was developed under the guidance of Rafal Donczew as part of a COBRE-funded collaborative effort. While the pipeline was built specifically for use within the Donczew Lab, it is broadly applicable to ChEC-seq data analysis in other research settings.
+
+---
+
+## 12) License
+
+This project is licensed under the **Apache 2.0**. See the [LICENSE](LICENSE) file for details.  
+
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
