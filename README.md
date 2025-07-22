@@ -82,7 +82,8 @@ All parameters and module versions are specified in `config/config.yml`
 
 ## 4) Tools & Modules
 
-This Snakemake pipeline relies on:
+This pipeline uses the following tools via HPC environment modules:  
+
 - **FastQC** for read quality checks
 - **MultiQC** for summarizing FastQC reports
 - **BBDuk** (in **BBMap**) for adapter trimming  
@@ -104,22 +105,27 @@ A minimal test dataset can be placed in a `resources/` folder (not included curr
 
 ## 6) Explanation of `samples.csv`
 
-`config/samples.csv` defines which FASTQ files to process, what the naming convention will be, and which samples to create average signal tracks. An example `samples.csv` is provided below:
+`config/samples.csv` defines which FASTQ files to process, what the naming convention will be, and which samples to create average signal tracks. An example `samples.csv` is provided below:  
 
-| sample             | fastq1                        | fastq2                       | merge_group |
-|--------------------|-------------------------------|------------------------------|-------------|
-| **RDY226_DMSO_A**  | /path/ExampleA_R1.fastq.gz    | /path/ExampleA_R2.fastq.gz   | DMSO        |
-| **RDY226_DMSO_B**  | /path/ExampleB_R1.fastq.gz    | /path/ExampleB_R2.fastq.gz   | DMSO        |
-| **RDY226_IAA_A**   | /path/ExampleC_R1.fastq.gz    | /path/ExampleC_R2.fastq.gz   | IAA         |
+| sample           | fastq1                              | fastq2                              | merge_group |
+|------------------|-------------------------------------|-------------------------------------|-------------|
+| **RDY73_DMSO_A** | /path/RDHTS192_S63_R1_001.fastq.gz  | /path/RDHTS192_S63_R2_001.fastq.gz  | DMSO        |
+| **RDY73_IAA_A**  | /path/RDHTS193_S64_R1_001.fastq.gz  | /path/RDHTS193_S64_R2_001.fastq.gz  | IAA         |
+| **RDY73_DMSO_B** | /path/RDHTS195_S66_R1_001.fastq.gz  | /path/RDHTS195_S66_R2_001.fastq.gz  | DMSO        |
+| **RDY73_IAA_B**  | /path/RDHTS196_S67_R1_001.fastq.gz  | /path/RDHTS196_S67_R2_001.fastq.gz  | IAA         |
+| **RDY73_DMSO_C** | /path/RDHTS198_S69_R1_001.fastq.gz  | /path/RDHTS198_S69_R2_001.fastq.gz  | DMSO        |
+| **RDY73_IAA_C**  | /path/RDHTS199_S70_R1_001.fastq.gz  | /path/RDHTS199_S70_R2_001.fastq.gz  | IAA         |
 
 + **sample**: unique sample ID that will serve as file naming convention downstream  
 + **fastq1** and **fastq2**: file paths to paired-end fastq files  
-+ **merge_group**: optional label for merging coverage across replicates (e.g., DMSO vs. IAA). Samples with the same `merge_group` will be averaged into a mean coverage BedGraph and BigWig/WIG.
++ **merge_group**: optional label for merging coverage across replicates (e.g., DMSO vs. IAA). Samples with the same `merge_group` will be averaged into a mean coverage BedGraph and BigWig/WIG.  
 
 ---
 
-## 7) Examples of Output
+## 7) Output Structure
 
+  The pipeline generates output across several folders:  
+  
 1. **Trimming and QC**  
   + FastQC HTML reports in `results/qc/fastqc/`
   + MultiQC HTML reports in `results/qc/multiqc/`
