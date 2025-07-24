@@ -201,8 +201,8 @@ module load slurm python/3.10 pandas/2.2.3 numpy/1.22.3 matplotlib/3.7.1
 ```
 9C. Modify samples and config file
 ```
-vim samples.csv
-vim config.yml
+vim config/samples.csv
+vim config/config.yml
 ```
 9D. Dry Run
 ```
