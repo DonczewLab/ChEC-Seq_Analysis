@@ -270,8 +270,8 @@ rule trim_adapters:
                 2> {log}
             baseR1=$(basename {input.r1} .fastq.gz)
             baseR2=$(basename {input.r2} .fastq.gz)
-            mv results/trimmed/${{baseR1}}_trimmed.fq.gz {output.r1_trim}
-            mv results/trimmed/${{baseR2}}_trimmed.fq.gz {output.r2_trim}
+            mv results/trimmed/${{baseR1}}_val_1.fq.gz {output.r1_trim}
+            mv results/trimmed/${{baseR2}}_val_2.fq.gz {output.r2_trim}
         else
             bbduk.sh -Xmx1g \
                 in1={input.r1} \
