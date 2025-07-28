@@ -77,14 +77,6 @@ use_trim_galore = config["use_trim_galore"]
 # alignment filtering (default = TRUE)
 use_filtering = config["use_filtering"]
 
-filtered_bam_targets = []
-if use_filtering:
-    filtered_bam_targets = [
-        f"results/alignment_filtered/{sample}_filtered.bam" for sample in SAMPLES
-    ] + [
-        f"results/alignment_filtered/{sample}_filtered.bam.bai" for sample in SAMPLES
-    ]
-
 # Extract unique merge groups from the new column (e.g. DMSO, IAA, etc.)
 merge_groups = samples_df["merge_group"].unique().tolist()
 
@@ -136,7 +128,6 @@ rule all:
         # 3) scer BAM + BAI + optional Filtering
         expand("results/alignment/scer/{sample}.bam", sample=SAMPLES),
         expand("results/alignment/scer/{sample}.bam.bai", sample=SAMPLES),
-        *filtered_bam_targets,
 
         # 4) Spike-In (dmel) BAM + BAI
         expand("results/alignment/spikein/{sample}.bam", sample=SAMPLES),
@@ -309,51 +300,42 @@ rule align_scer:
         bam="results/alignment/scer/{sample}.bam",
         bai="results/alignment/scer/{sample}.bam.bai"
     params:
-        bowtie2_scer=config["scer_genome"]
+        bowtie2_scer=config["scer_genome"],
+        use_filtering=use_filtering
     envmodules:
         config["bowtie2"],
-        config["samtools"]
+        config["samtools"],
+        config["deeptools"]
     log:
         "results/logs/alignment/scer/{sample}.log"
     shell:
         """
+        # Alignment and Sorting
         bowtie2 --very-sensitive-local --threads 16 \
             -x {params.bowtie2_scer} \
             -1 {input.r1} -2 {input.r2} \
             --maxins 700 --dovetail --no-unal --no-mixed --no-discordant \
             2> {log} | \
         samtools fixmate -O bam -@ 8 -m - - | \
-        samtools sort -O bam -@ 8 -o {output.bam}
+        samtools sort -O bam -@ 8 -o tmp_{wildcards.sample}.bam
+
+        # Optional Filtering
+        if [ "{params.use_filtering}" == "True" ]; then
+            alignmentSieve \
+                --numberOfProcessors 16 \
+                --bam tmp_{wildcards.sample}.bam \
+                --outFile {output.bam} \
+                --filterMetrics results/alignment/scer/{wildcards.sample}_filtering.log \
+                --ignoreDuplicates \
+                --minFragmentLength 25 \
+                --verbose
+            rm tmp_{wildcards.sample}.bam
+        else
+            mv tmp_{wildcards.sample}.bam {output.bam}
+        fi
+
+        # Index Bam
         samtools index -@ 8 {output.bam} {output.bai}
-        """
-
-
-##################################################################
-##                Alignment Filtering (optional)                ##
-##################################################################
-
-rule filter_alignment:
-    input:
-        bam="results/alignment/scer/{sample}.bam"
-    output:
-        bam="results/alignment/{sample}_filtered.bam",
-        bai="results/alignment/{sample}_filtered.bam.bai",
-        log="results/alignment/{sample}_filtered.log"
-    envmodules:
-        config["deeptools"],
-        config["samtools"]
-    shell:
-        """
-        alignmentSieve \
-            --numberOfProcessors 16 \
-            --bam {input.bam} \
-            --outFile {output.bam} \
-            --filterMetrics {output.log} \
-            --ignoreDuplicates \
-            --minFragmentLength 25 \
-            --verbose
-
-        samtools index --threads 16 {output.bam}
         """
 
 
