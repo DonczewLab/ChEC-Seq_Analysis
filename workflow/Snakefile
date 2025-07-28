@@ -259,7 +259,7 @@ rule trim_adapters:
         """
         if [ "{params.use_trim_galore}" == "True" ]; then
             trim_galore \
-                --paired
+                --paired \
                 --stringency {params.stringency} \
                 --length {params.length} \
                 --cores 4 \
@@ -280,7 +280,7 @@ rule trim_adapters:
                 out2={output.r2_trim} \
                 ref={params.bbmap_ref} \
                 k=23 ktrim=r mink=11 hdist=1 tpe=t tbo=t \
-                threads-8 2> {log}
+                threads=8 2> {log}
         fi
         """
 
