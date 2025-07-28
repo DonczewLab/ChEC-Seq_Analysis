@@ -8,8 +8,8 @@ configfile: "config/config.yml"
 # Email: kevinboyd76@gmail.com
 # GitHub: https://github.com/kevinboyd76
 # Date Created: March 27, 2025
-# Last Modified: April 15, 2025
-# Version: 1.0.0
+# Last Modified: July 28, 2025
+# Version: 1.1.0
 #
 # Description: This workflow processes Chec-Seq data from raw FASTQ
 # files to normalized signal tracks with spike-in and scale factor 
