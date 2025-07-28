@@ -24,7 +24,7 @@ configfile: "config/config.yml"
 #  Steps:
 #  1) FastQC / MultiQC
 #  2) Adapter Trim (BBDuk or Trim Galore)
-#  3) Align to S. cerevisiae (primary, no spike-in)
+#  3) Align to S. cerevisiae (primary, no spike-in) with optional filtering
 #  4) Align to D. melanogaster (spike-in)
 #  5) Create Raw BigWig (from scer)
 #  6) Create Raw BedGraph (from scer)
