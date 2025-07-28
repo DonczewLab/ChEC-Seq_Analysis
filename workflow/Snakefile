@@ -23,7 +23,7 @@ configfile: "config/config.yml"
 
 #  Steps:
 #  1) FastQC / MultiQC
-#  2) Adapter Trim (BBDuk)
+#  2) Adapter Trim (BBDuk or Trim Galore)
 #  3) Align to S. cerevisiae (primary, no spike-in)
 #  4) Align to D. melanogaster (spike-in)
 #  5) Create Raw BigWig (from scer)
