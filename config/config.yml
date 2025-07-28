@@ -28,6 +28,13 @@ spikein_genome: "/hpc-prj/donczew/genomic_resources/Spombe_GCF_000002945.1/NCBI_
 bbmap_ref: "/hpc-prj/donczew/genomic_resources/bbmap/truseq_universal_adapters.fa"
 
 # ==============================================================================
+# TRIM_GALORE PARAMETERS
+# ==============================================================================
+use_trim_galore: false  # Set to false to use bbduk instead
+stringency: 3
+length: 10
+
+# ==============================================================================
 # BIGWIG / DEEPTOOLS PARAMETERS
 # ==============================================================================
 binSize: 1
@@ -38,6 +45,7 @@ binSize: 1
 fastqc: "fastqc/0.12.1"
 multiqc: "multiqc/1.21"
 bbmap: "bbmap/39.06"
+trim_galore: "trim_galore/0.6.7"
 bowtie2: "bowtie2/2.5.0"
 samtools: "samtools/1.18"
 deeptools: "deeptools/3.5.4"
