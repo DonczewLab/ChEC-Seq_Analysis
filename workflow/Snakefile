@@ -71,8 +71,19 @@ def fq_dict_from_sample(wildcards):
         "r2": row["fastq2"]
     }
 
-# pull trim galore true/false out
+# trim galore option (default = FALSE)
 use_trim_galore = config["use_trim_galore"]
+
+# alignment filtering (default = TRUE)
+use_filtering = config["use_filtering"]
+
+filtered_bam_targets = []
+if use_filtering:
+    filtered_bam_targets = [
+        f"results/alignment_filtered/{sample}_filtered.bam" for sample in SAMPLES
+    ] + [
+        f"results/alignment_filtered/{sample}_filtered.bam.bai" for sample in SAMPLES
+    ]
 
 # Extract unique merge groups from the new column (e.g. DMSO, IAA, etc.)
 merge_groups = samples_df["merge_group"].unique().tolist()
@@ -122,9 +133,10 @@ rule all:
         #expand("results/trimmed/{sample}_R1_trimmed.fastq.gz", sample=SAMPLES),
         #expand("results/trimmed/{sample}_R2_trimmed.fastq.gz", sample=SAMPLES),
 
-        # 3) scer BAM + BAI
+        # 3) scer BAM + BAI + optional Filtering
         expand("results/alignment/scer/{sample}.bam", sample=SAMPLES),
         expand("results/alignment/scer/{sample}.bam.bai", sample=SAMPLES),
+        *filtered_bam_targets,
 
         # 4) Spike-In (dmel) BAM + BAI
         expand("results/alignment/spikein/{sample}.bam", sample=SAMPLES),
@@ -313,6 +325,35 @@ rule align_scer:
         samtools fixmate -O bam -@ 8 -m - - | \
         samtools sort -O bam -@ 8 -o {output.bam}
         samtools index -@ 8 {output.bam} {output.bai}
+        """
+
+
+##################################################################
+##                Alignment Filtering (optional)                ##
+##################################################################
+
+rule filter_alignment:
+    input:
+        bam="results/alignment/scer/{sample}.bam"
+    output:
+        bam="results/alignment/{sample}_filtered.bam",
+        bai="results/alignment/{sample}_filtered.bam.bai",
+        log="results/alignment/{sample}_filtered.log"
+    envmodules:
+        config["deeptools"],
+        config["samtools"]
+    shell:
+        """
+        alignmentSieve \
+            --numberOfProcessors 16 \
+            --bam {input.bam} \
+            --outFile {output.bam} \
+            --filterMetrics {output.log} \
+            --ignoreDuplicates \
+            --minFragmentLength 25 \
+            --verbose
+
+        samtools index --threads 16 {output.bam}
         """
 
 
