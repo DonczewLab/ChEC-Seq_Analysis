@@ -8,6 +8,9 @@ samples_csv: "config/samples.csv"
 # Primary (no spike-in) genome = S. cerevisiae
 scer_genome: "/hpc-prj/donczew/genomic_resources/Scerevisiae_GCF_000146045.2/SGD_R64-3-1_genome_bowtie2_index/SGD_R64-3-1_genome"
 genome_file_scer: "/hpc-prj/donczew/genomic_resources/Scerevisiae_GCF_000146045.2/SGD_R64-3-1_genomefile.txt"
+# Toggle alignment filtering
+use_filtering: true
+# blacklist and include list
 blacklist_scer: "/hpc-prj/donczew/genomic_resources/Scerevisiae_GCF_000146045.2/SGD_R64-3-1_excludelist.bed"
 include_list: "/hpc-prj/donczew/genomic_resources/Scerevisiae_GCF_000146045.2/SGD_R64-3-1_includelist.bed"
 
