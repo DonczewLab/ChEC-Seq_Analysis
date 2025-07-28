@@ -319,6 +319,9 @@ rule align_scer:
         samtools fixmate -O bam -@ 8 -m - - | \
         samtools sort -O bam -@ 8 -o tmp_{wildcards.sample}.bam
 
+        # Index temporary BAM before filtering
+        samtools index -@ 8 tmp_{wildcards.sample}.bam
+
         # Optional Filtering
         if [ "{params.use_filtering}" == "True" ]; then
             alignmentSieve \
@@ -332,10 +335,13 @@ rule align_scer:
             rm tmp_{wildcards.sample}.bam
         else
             mv tmp_{wildcards.sample}.bam {output.bam}
+            mv tmp_{wildcards.sample}.bam.bai {output.bai}
         fi
 
         # Index Bam
-        samtools index -@ 8 {output.bam} {output.bai}
+        if [ ! -f {output.bai} ]; then
+            samtools index -@ 8 {output.bam} {output.bai}
+        fi
         """
 
 
