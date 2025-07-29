@@ -11,9 +11,14 @@ configfile: "config/config.yml"
 # Last Modified: July 28, 2025
 # Version: 1.1.0
 #
-# Description: This workflow processes Chec-Seq data from raw FASTQ
-# files to normalized signal tracks with spike-in and scale factor 
-# correction.
+# Description: This Snakemake workflow processes Chec-Seq data starting 
+# from raw paired-end FASTQ files through quality control, adapter trimming 
+# (via BBDuk or Trim Galore), alignment to both the primary (eg: S. cerevisiae) 
+# and spike-in (eg: S. pombe) genomes, optional alignment filtering, and coverage 
+# normalization using spike-in and CPM-based scale factors. The pipeline 
+# generates normalized signal tracks in BigWig, BedGraph, and WIG formats, 
+# along with summary plots and statistics for alignment quality and fragment 
+# length distribution.
 # 
 # Adapted from: Chec-Seq Protocol from Rafal Donczew & John Ridenour
 
