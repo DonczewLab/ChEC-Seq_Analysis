@@ -6,6 +6,7 @@
 ![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/DonczewLab/ChEC-Seq_Analysis/total)
 ![GitHub commits since latest release](https://img.shields.io/github/commits-since/DonczewLab/ChEC-Seq_Analysis/latest)
 [![DOI](https://zenodo.org/badge/939591126.svg)](https://doi.org/10.5281/zenodo.15232549)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 # ChEC-seq Analysis Snakemake Workflow
 
