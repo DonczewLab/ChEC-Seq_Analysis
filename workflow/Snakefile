@@ -317,25 +317,25 @@ rule align_scer:
             --maxins 700 --dovetail --no-unal --no-mixed --no-discordant \
             2> {log} | \
         samtools fixmate -O bam -@ 8 -m - - | \
-        samtools sort -O bam -@ 8 -o tmp_{wildcards.sample}.bam
+        samtools sort -O bam -@ 8 -o results/tmp_{wildcards.sample}.bam
 
         # Index temporary BAM before filtering
-        samtools index -@ 8 tmp_{wildcards.sample}.bam
+        samtools index -@ 8 results/tmp_{wildcards.sample}.bam
 
         # Optional Filtering
         if [ "{params.use_filtering}" == "True" ]; then
             alignmentSieve \
                 --numberOfProcessors 16 \
-                --bam tmp_{wildcards.sample}.bam \
+                --bam results/tmp_{wildcards.sample}.bam \
                 --outFile {output.bam} \
                 --filterMetrics results/alignment/scer/{wildcards.sample}_filtering.log \
                 --ignoreDuplicates \
                 --minFragmentLength 25 \
                 --verbose
-            rm tmp_{wildcards.sample}.bam
+            rm results/tmp_{wildcards.sample}.bam results/tmp_{wildcards.sample}.bam.bai
         else
-            mv tmp_{wildcards.sample}.bam {output.bam}
-            mv tmp_{wildcards.sample}.bam.bai {output.bai}
+            mv results/tmp_{wildcards.sample}.bam {output.bam}
+            mv results/tmp_{wildcards.sample}.bam.bai {output.bai}
         fi
 
         # Index Bam
