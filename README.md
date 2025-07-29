@@ -224,7 +224,7 @@ sbatch --wrap="snakemake -j 20 --use-envmodules --rerun-incomplete --latency-wai
 
 If you use this workflow in your research, please cite:
 
-**Boyd, K.A.**, Ridenour, J., & Donczew, R. (2025). *ChEC-Seq_Analysis: A reproducible Snakemake workflow for spike-in normalized chromatin cleavage data*. Zenodo. https://doi.org/10.5281/zenodo.15232549
+**Boyd, K.A.**, Ridenour, J., & Donczew, R. (2025). *ChEC-Seq_Analysis: A reproducible Snakemake workflow for Chromatin Endogenous Cleavage (ChEC) experiments*. Zenodo. https://doi.org/10.5281/zenodo.15232549
 
 [![DOI](https://zenodo.org/badge/939591126.svg)](https://doi.org/10.5281/zenodo.15232549)
 
