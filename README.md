@@ -78,7 +78,8 @@ All parameters and module versions are specified in `config/config.yml`
 + If using a different spike-in (e.g. *D. melanogaster*), just update the relevant Bowtie2 index and references in `config.yml`.
 
 **Tool Versions and Modules**  
-+ The `config.yml` file specifies all software and specific versions
++ The `config/config.yml` file specifies all software and specific versions  
++ The `config/cluster_config.yml` file defines resource requirements for each Snakemake rule  
 
 ---
 
