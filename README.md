@@ -26,7 +26,7 @@
 - **Automatic Trimming & QC**  
   + FastQC runs on raw FASTQs
   + MultiQC summarizes all QC reports into one unified HTML report
-  + BBDuk handles adapter removal 
+  + BBDuk or Trim Galore handles adapter removal 
 
 - **Multiple Coverage Outputs**  
   + **Raw** BigWig, BedGraph, & Wig: unnormalized coverage  
