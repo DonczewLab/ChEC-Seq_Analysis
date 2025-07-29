@@ -40,7 +40,7 @@
   ],
   "related_identifiers": [
     {
-      "identifier": "https://github.com/RD-Cobre-Help/ChEC-Seq_Analysis",
+      "identifier": "https://github.com/DonczewLab/ChEC-Seq_Analysis",
       "relation": "isSupplementTo",
       "scheme": "url"
     }
