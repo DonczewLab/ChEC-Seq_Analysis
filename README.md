@@ -50,7 +50,7 @@
 
 ## 2) Intended Use Case
 
-This pipeline is **ideal** for performing **ChEC-seq**. It is a user-friendly workflow with customizable `samples.csv` and `config.yml` files, enabling reproducible and flexible analysis:
+This pipeline is **ideal** for performing **ChEC-seq** analysis. It is a user-friendly workflow with customizable `samples.csv` and `config.yml` files, enabling reproducible and flexible analysis:
 
 - Start with raw FASTQ reads  
 - Use an external spike-in organism (e.g., *S. pombe* or *D. melanogaster*) for normalization   
@@ -66,11 +66,13 @@ By offering multiple coverage normalizations and easy HPC integration, this pipe
 All parameters and module versions are specified in `config/config.yml`
 
 **Key fields include**:
+- `use_trim_galore`: true or false (default = false) set to true to use Trim Galore instead of BBDuk
+- `use_filtering`: true or false (default = true) set to false to skip `alignmentSieve` filtering
 - `scer_genome`: path to the **S. cerevisiae** Bowtie2 index  
 - `spikein_genome`: path to the **Spike In** Bowtie2 index (e.g., S. pombe)  
 - `bbmap_ref`: adapter sequence reference for BBDuk  
 - `binSize`: bin size for coverage generation  
-- `fastqc, bowtie2, samtools, deeptools, bedtools, ucsc, python`: module versions for HPC
+- `fastqc, bowtie2, samtools, deeptools, bedtools, trim_galore, bbduk, ucsc, python, R`: module versions for HPC
 
 **Changing Genomes**  
 + If using a different spike-in (e.g. *D. melanogaster*), just update the relevant Bowtie2 index and references in `config.yml`.
@@ -86,13 +88,14 @@ This pipeline uses the following tools via HPC environment modules:
 
 - **FastQC** for read quality checks
 - **MultiQC** for summarizing FastQC reports
-- **BBDuk** (in **BBMap**) for adapter trimming  
+- **BBDuk** (in **BBMap**) for adapter trimming
+- **Trim Galore** for adapter trimming (optional)
 - **Bowtie2** for alignments  
-- **Samtools** for BAM conversions/indexing  
-- **DeepTools** (bamCoverage) for coverage generation  
+- **Samtools** for BAM conversions/indexing
+- **DeepTools** `alignmentSieve` for optional filtering of aligned BAMs & `bamCoverage` for coverage generation  
 - **Bedtools** for Average Signal files
 - **Python** for spike-in factor calculations and WIG conversions
-- **UCSC** (bedGraphToBigWig) to generate average signal BigWigs from BedGraphs
+- **UCSC** `bedGraphToBigWig` to generate average signal BigWigs from BedGraphs
 - **R** to generate alignment metric plots
 
 ---
@@ -122,22 +125,22 @@ A minimal test dataset can be placed in a `resources/` folder (not included curr
 
 ---
 
-## 7) Output Structure
+## 7) Output Structure  
 
   The pipeline generates output across several folders:  
   
 1. **Trimming and QC**  
   + FastQC HTML reports in `results/qc/fastqc/`
   + MultiQC HTML reports in `results/qc/multiqc/`
-  + Trimmed FASTQs in `results/trimmed/`
 
 2. **Aligned Files**  
-  + Primary BAMs in `results/alignment/scer`  
-  + Spike-in BAMs in `results/alignment/spikein`
+  + Primary BAMs in `results/alignment/scer`
+  + If filtering is enabled, a `results/alignment/scer/{sample}_filtering.log` will be written for each sample  
+  + Spike-in BAMs in `results/alignment/spikein`  
 
 3. **Spike-In Factors**  
-  + `spikein_factors.csv` in `results/spikein_factors/`
-    + lists scer/dmel read counts and a `spikein_factor` for each sample
+  + `spikein_factors.csv` in `results/spikein_factors/`  
+    + lists scer/dmel read counts and a `spikein_factor` for each sample  
 
 4. **CPM Scale Factors**
   + `cpm_scale_factors.csv` in `results/scale_reads/`
