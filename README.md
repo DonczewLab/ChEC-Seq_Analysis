@@ -10,8 +10,10 @@
 
 # ChEC-seq Analysis Snakemake Workflow
 
-![CHEC Analysis](/images/CHECSeq_pipeline.png)  
-- OpenAI. (2025). Scientific data visualization: CHEC-seq pipeline schematic [AI-generated image]. DALL-E. Retrieved from ChatGPT interface.
+<p align="center">
+  <img src="/images/CHECSeq_pipeline.png" alt="ChEC Seq Analysis"><br>
+  <em><sub>OpenAI. (2025). Scientific data visualization: ChEC-seq pipeline schematic [AI-generated image]. DALL-E.</sub></em>
+</p>
 
 ---
 
