@@ -8,7 +8,7 @@
 [![DOI](https://zenodo.org/badge/939591126.svg)](https://doi.org/10.5281/zenodo.15232549)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-# ChEC-seq Analysis
+# ChEC-seq_Analysis
 
 <p align="center">
   <img src="/images/CHECSeq_pipeline.png" alt="ChEC Seq Analysis"><br>
