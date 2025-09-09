@@ -19,7 +19,7 @@
 
 ## 1) Project Description
 
-**ChEC-seq Analysis Snakemake Workflow** is a Snakemake pipeline designed for Chromatin Endogenous Cleavage (ChEC) experiments. Rather than manually invoking each step (QC, trimming, alignment, coverage generation, mean coverage merging, WIG conversion, and plotting alignment metrics), this pipeline automates the entire process from **raw FASTQ** inputs to **multiple coverage tracks** (raw, CPM, and spike-in normalized), as well as merged replicates to create an average signal track via a `merge_group` column in `samples.csv`. CPM tracks are created by calculating the total number of reads in a specified include list region (e.g., non-rDNA genome), then generating a scale factor as the reciprocal of reads per million (i.e., 1 / (total_reads / 1,000,000)), which is applied during coverage generation.
+**ChEC-seq_Analysis** is a Snakemake pipeline designed for Chromatin Endogenous Cleavage (ChEC) experiments. Rather than manually invoking each step (QC, trimming, alignment, coverage generation, mean coverage merging, WIG conversion, and plotting alignment metrics), this pipeline automates the entire process from **raw FASTQ** inputs to **multiple coverage tracks** (raw, CPM, and spike-in normalized), as well as merged replicates to create an average signal track via a `merge_group` column in `samples.csv`. CPM tracks are created by calculating the total number of reads in a specified include list region (e.g., non-rDNA genome), then generating a scale factor as the reciprocal of reads per million (i.e., 1 / (total_reads / 1,000,000)), which is applied during coverage generation.
 
 ### Key Features
 
