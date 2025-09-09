@@ -232,7 +232,7 @@ If you use this workflow in your research, please cite:
 
 ## 11) Authorship & Contributions
 
-**Kevin A. Boyd** – Designed the Snakemake workflows modularized structure, implemented processing steps, integrated spike-in normalization support, added quality control plots, and created documentation.  
+**Kevin A. Boyd** – Designed the Snakemake workflows modularized structure, implemented processing steps, integrated spike-in normalization, added quality control plots, and created documentation.  
 
 **John Ridenour** – Developed original ChEC-seq bash scripts used as the foundation for this pipeline.  
 
