@@ -8,8 +8,8 @@ configfile: "config/config.yml"
 # Email: kevinboyd76@gmail.com
 # GitHub: https://github.com/kevinboyd76
 # Date Created: March 27, 2025
-# Last Modified: July 28, 2025
-# Version: 1.1.1
+# Last Modified: Sept 12, 2025
+# Version: 2.0.0
 #
 # Description: This Snakemake workflow processes Chec-Seq data starting 
 # from raw paired-end FASTQ files through quality control, adapter trimming 
@@ -305,7 +305,7 @@ rule align_scer:
         bam="results/alignment/scer/{sample}.bam",
         bai="results/alignment/scer/{sample}.bam.bai"
     params:
-        bowtie2_scer=config["scer_genome"],
+        bowtie2_primary=config["primary_bowtie_genome"],
         use_filtering=use_filtering
     envmodules:
         config["bowtie2"],
@@ -317,7 +317,7 @@ rule align_scer:
         """
         # Alignment and Sorting
         bowtie2 --very-sensitive-local --threads 16 \
-            -x {params.bowtie2_scer} \
+            -x {params.bowtie2_primary} \
             -1 {input.r1} -2 {input.r2} \
             --maxins 700 --dovetail --no-unal --no-mixed --no-discordant \
             2> {log} | \
@@ -392,7 +392,7 @@ rule make_bigwig_raw_scer:
         "results/bigwig/raw/{sample}_raw.bw"
     params:
         binSize=config["binSize"],
-        blacklist=config["blacklist_scer"]
+        blacklist=config["blacklist"]
     envmodules:
         config["deeptools"]
     log:
@@ -419,7 +419,7 @@ rule make_bedgraph_raw_scer:
         "results/bedgraph/raw/{sample}_raw.bg"
     params:
         binSize=config["binSize"],
-        blacklist=config["blacklist_scer"]
+        blacklist=config["blacklist"]
     envmodules:
         config["deeptools"]
     log:
@@ -478,7 +478,7 @@ rule make_bigwig_scer_spikein:
         "results/bigwig/spikein/{sample}_spikein.bw"
     params:
         binSize=config["binSize"],
-        blacklist=config["blacklist_scer"]
+        blacklist=config["blacklist"]
     envmodules:
         config["deeptools"],
         config["python"]
@@ -529,7 +529,7 @@ rule make_bedgraph_scer_spikein:
         "results/bedgraph/spikein/{sample}_spikein.bg"
     params:
         binSize=config["binSize"],
-        blacklist=config["blacklist_scer"]
+        blacklist=config["blacklist"]
     envmodules:
         config["deeptools"],
         config["python"]
@@ -601,7 +601,7 @@ rule bedgraph_to_bigwig_mean_spikein:
     output:
         "results/bigwig/spikein_mean/{group}_spikein_mean.bw"
     params:
-        genome_file=config["genome_file_scer"]
+        genome_file=config["primary_genome_file"]
     envmodules:
         config["ucsc"]
     log:
@@ -693,7 +693,7 @@ rule make_bigwig_scer_cpm:
         bigwig_scaled = "results/bigwig/cpm/{sample}_cpm.bw"
     params:
         binSize = config["binSize"],
-        blacklist = config["blacklist_scer"]
+        blacklist = config["blacklist"]
     envmodules:
         config["deeptools"]
     log:
@@ -723,7 +723,7 @@ rule make_bedgraph_scer_cpm:
         "results/bedgraph/cpm/{sample}_cpm.bg"
     params:
         binSize = config["binSize"],
-        blacklist = config["blacklist_scer"]
+        blacklist = config["blacklist"]
     envmodules:
         config["deeptools"]
     log:
@@ -779,7 +779,7 @@ rule bedgraph_to_bigwig_mean_cpm:
     output:
         "results/bigwig/cpm_mean/{group}_cpm_mean.bw"
     params:
-        genome_file=config["genome_file_scer"]
+        genome_file=config["primary_genome_file"]
     envmodules:
         config["ucsc"]
     log:
