@@ -26,10 +26,11 @@
 - **Flexible Spike-In Normalization**  
   + Simultaneously aligns reads to the primary **S. cerevisiae** genome and a **spike-in** genome (e.g., *S. pombe*), calculating a per-sample scaling factor to accurately normalize coverage.
 
-- **Automatic Trimming & QC**  
+- **Automatic Trimming & QC with Optional Filtering**  
   + FastQC runs on raw FASTQs
   + MultiQC summarizes all QC reports into one unified HTML report
-  + BBDuk or Trim Galore handles adapter removal 
+  + BBDuk or Trim Galore handles adapter removal
+  + Optional alignment filtering can be set in the `config.yml`
 
 - **Multiple Coverage Outputs**  
   + **Raw** BigWig, BedGraph, & Wig: unnormalized coverage  
@@ -69,10 +70,13 @@ By offering multiple coverage normalizations and easy HPC integration, this pipe
 All parameters and module versions are specified in `config/config.yml`
 
 **Key fields include**:
-- `use_trim_galore`: true or false (default = false) set to true to use Trim Galore instead of BBDuk
-- `use_filtering`: true or false (default = true) set to false to skip `alignmentSieve` filtering
-- `scer_genome`: path to the **S. cerevisiae** Bowtie2 index  
-- `spikein_genome`: path to the **Spike In** Bowtie2 index (e.g., S. pombe)  
+- `use_trim_galore`: true or false (default = false) set to true to use Trim Galore instead of BBDuk  
+- `use_filtering`: true or false (default = true) set to false to skip `alignmentSieve` filtering  
+- `primary_bowtie_genome`: path to the **S. cerevisiae** Bowtie2 index  
+- `primary_genome_file`: path to **S. cerevisiae** genome file  
+- `spikein_genome`: path to the **Spike In** Bowtie2 index (e.g., S. pombe)
+- `blacklist`: path to the primary genome blacklist file
+- `include_list`: path to the pirmary genome include list  
 - `bbmap_ref`: adapter sequence reference for BBDuk  
 - `binSize`: bin size for coverage generation  
 - `fastqc, bowtie2, samtools, deeptools, bedtools, trim_galore, bbduk, ucsc, python, R`: module versions for HPC
