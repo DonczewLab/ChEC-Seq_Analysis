@@ -7,21 +7,22 @@ samples_csv: "config/samples.csv"
 # PRIMARY GENOME & BLACKLIST FILE PATHS
 # ==============================================================================
 # Primary genome = S. cerevisiae
-scer_genome: "/hpc-prj/donczew/genomic_resources/Scerevisiae_GCF_000146045.2/SGD_R64-3-1_genome_bowtie2_index/SGD_R64-3-1_genome"
-genome_file_scer: "/hpc-prj/donczew/genomic_resources/Scerevisiae_GCF_000146045.2/SGD_R64-3-1_genomefile.txt"
-
+primary_bowtie_genome: "/hpc-prj/donczew/genomic_resources/Scerevisiae_GCF_000146045.2/SGD_R64-3-1_genome_bowtie2_index/SGD_R64-3-1_genome"
+primary_genome_file: "/hpc-prj/donczew/genomic_resources/Scerevisiae_GCF_000146045.2/SGD_R64-3-1_genomefile.txt"
 # blacklist and include list
 blacklist_scer: "/hpc-prj/donczew/genomic_resources/Scerevisiae_GCF_000146045.2/SGD_R64-3-1_excludelist.bed"
 include_list: "/hpc-prj/donczew/genomic_resources/Scerevisiae_GCF_000146045.2/SGD_R64-3-1_includelist.bed"
+
+# ==============================================================================
+# TOGGLE ON/OFF ALIGNMENT FILTERING
+# ==============================================================================
+use_filtering: true
 
 # ==============================================================================
 # SPIKE IN GENOME
 # ==============================================================================
 # Default spike-in genome = S. pombe
 spikein_genome: "/hpc-prj/donczew/genomic_resources/Spombe_GCF_000002945.1/NCBI_ASM294v2_genome_bowtie2_index/NCBI_ASM294v2_genome"
-
-# Toggle alignment filtering
-use_filtering: true
 
 # ------------------------------------------------------------------------------
 # Optionally, if you want to switch to D. melanogaster as spike-in, change spikein_genome with specified path found below:
