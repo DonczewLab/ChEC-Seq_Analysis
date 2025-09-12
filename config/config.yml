@@ -1,21 +1,27 @@
-## samples file
+# ==============================================================================
+# SAMPLES FILE
+# ==============================================================================
 samples_csv: "config/samples.csv"
 
 # ==============================================================================
-# GENOME and BLACKLIST PATHS
+# PRIMARY GENOME & BLACKLIST FILE PATHS
 # ==============================================================================
-
-# Primary (no spike-in) genome = S. cerevisiae
+# Primary genome = S. cerevisiae
 scer_genome: "/hpc-prj/donczew/genomic_resources/Scerevisiae_GCF_000146045.2/SGD_R64-3-1_genome_bowtie2_index/SGD_R64-3-1_genome"
 genome_file_scer: "/hpc-prj/donczew/genomic_resources/Scerevisiae_GCF_000146045.2/SGD_R64-3-1_genomefile.txt"
-# Toggle alignment filtering
-use_filtering: true
+
 # blacklist and include list
 blacklist_scer: "/hpc-prj/donczew/genomic_resources/Scerevisiae_GCF_000146045.2/SGD_R64-3-1_excludelist.bed"
 include_list: "/hpc-prj/donczew/genomic_resources/Scerevisiae_GCF_000146045.2/SGD_R64-3-1_includelist.bed"
 
+# ==============================================================================
+# SPIKE IN GENOME
+# ==============================================================================
 # Default spike-in genome = S. pombe
 spikein_genome: "/hpc-prj/donczew/genomic_resources/Spombe_GCF_000002945.1/NCBI_ASM294v2_genome_bowtie2_index/NCBI_ASM294v2_genome"
+
+# Toggle alignment filtering
+use_filtering: true
 
 # ------------------------------------------------------------------------------
 # Optionally, if you want to switch to D. melanogaster as spike-in, change spikein_genome with specified path found below:
@@ -26,14 +32,12 @@ spikein_genome: "/hpc-prj/donczew/genomic_resources/Spombe_GCF_000002945.1/NCBI_
 # ------------------------------------------------------------------------------
 
 # ==============================================================================
-# ADAPTER FILE (BBDuk)
+# TOGGLE ON/OFF TRIM GALORE (false = BBDuk | true = Trim Galore)
 # ==============================================================================
+use_trim_galore: false
+# BBDuk adapter file
 bbmap_ref: "/hpc-prj/donczew/genomic_resources/bbmap/truseq_universal_adapters.fa"
-
-# ==============================================================================
-# TRIM_GALORE PARAMETERS
-# ==============================================================================
-use_trim_galore: false  # Set to false to use bbduk instead
+# Trim Galore parameters
 stringency: 3
 length: 10
 
